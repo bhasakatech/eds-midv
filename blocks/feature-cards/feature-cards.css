@@ -1,0 +1,100 @@
+/*
+ * feature-cards — resource card grid
+ * Source: events.gehealthcare.com section.resources-section
+ * Title above a bordered clickable image with a purple corner badge.
+ */
+
+.feature-cards {
+  --fc-purple: var(--brand-purple, #6022a6);
+  --fc-border: #d1d3d4;
+
+  background-color: #fff;
+  color: #000;
+}
+
+.feature-cards .feature-cards-inner {
+  padding: 40px 0 8px;
+}
+
+.feature-cards .feature-cards-header h2,
+.feature-cards .feature-cards-header h3 {
+  margin: 0 0 8px;
+  color: var(--fc-purple);
+  font-family: var(--heading-font-family);
+  font-weight: 400;
+  line-height: 1.2;
+}
+
+.feature-cards .feature-cards-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 8px 30px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.feature-cards .feature-cards-grid > li {
+  margin: 8px 0 16px;
+}
+
+.feature-cards .feature-cards-card-title {
+  margin: 0 0 8px;
+  color: #000;
+  font-size: 17px;
+  font-weight: 400;
+  line-height: 1.5;
+}
+
+.feature-cards .feature-cards-media {
+  position: relative;
+  display: block;
+  border: 1px solid var(--fc-border);
+  line-height: 0;
+}
+
+.feature-cards .feature-cards-media picture,
+.feature-cards .feature-cards-media img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 348 / 200;
+  object-fit: cover;
+}
+
+.feature-cards .feature-cards-badge {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background-color: var(--fc-purple);
+}
+
+.feature-cards .feature-cards-badge svg {
+  width: 35px;
+  height: 35px;
+  display: block;
+}
+
+@media (width >= 600px) {
+  .feature-cards .feature-cards-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (width >= 900px) {
+  .feature-cards .feature-cards-inner {
+    padding: 40px 0 8px;
+  }
+
+  .feature-cards .feature-cards-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .feature-cards .feature-cards-header h2 {
+    font-size: 33px;
+  }
+}

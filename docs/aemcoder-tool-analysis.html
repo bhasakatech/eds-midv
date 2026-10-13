@@ -1,0 +1,1100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>AEM Coder Tool Analysis — eds-events-gehealthcare</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',Arial,sans-serif;font-size:13.5px;line-height:1.65;color:#1a1a2e;background:#f4f5f9}
+a{color:#6022a6;text-decoration:none}
+code{background:#f0e8ff;border:1px solid #d8c4f0;border-radius:3px;padding:1px 6px;font-size:11.5px;font-family:Consolas,monospace;color:#5a1a9a}
+/* ─── COVER ─────────────────────────────────────────────────────────────── */
+.cover{background:linear-gradient(140deg,#0d001f 0%,#3a0d70 45%,#6022a6 80%,#9b59b6 100%);color:#fff;padding:64px 72px 56px;min-height:100vh;display:flex;flex-direction:column;justify-content:center;page-break-after:always}
+.cover-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);border-radius:4px;padding:5px 14px;font-size:11px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;margin-bottom:40px;width:fit-content}
+.cover-badge .dot{width:9px;height:9px;border-radius:50%;background:#ff4444;flex-shrink:0}
+.cover h1{font-size:42px;font-weight:800;line-height:1.15;margin-bottom:16px;letter-spacing:-1px}
+.cover h1 span{display:block;font-size:21px;font-weight:400;opacity:.75;margin-bottom:6px;letter-spacing:0}
+.cover .sub{font-size:15.5px;opacity:.7;max-width:580px;margin-bottom:48px;line-height:1.6}
+.cover .tags{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:56px}
+.cover .tag{background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.2);border-radius:20px;padding:5px 15px;font-size:11.5px;font-weight:600}
+.cover .meta{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;border-top:1px solid rgba(255,255,255,.18);padding-top:28px}
+.cover .meta dt{font-size:9.5px;text-transform:uppercase;letter-spacing:1px;opacity:.5;margin-bottom:3px}
+.cover .meta dd{font-size:13px;font-weight:700}
+/* ─── PAGE WRAPPER ───────────────────────────────────────────────────────── */
+.wrap{max-width:1000px;margin:0 auto;padding:48px 52px}
+/* ─── TOC ───────────────────────────────────────────────────────────────── */
+.toc{background:#fff;border-radius:10px;padding:32px 36px;margin-bottom:40px;box-shadow:0 2px 8px rgba(0,0,0,.07)}
+.toc h2{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;color:#6022a6;border-bottom:2px solid #6022a6;padding-bottom:10px;margin-bottom:18px}
+.toc ol{padding-left:18px}
+.toc>ol>li{font-weight:700;font-size:13px;margin-bottom:8px}
+.toc>ol>li>ol{padding-left:18px;margin-top:3px}
+.toc>ol>li>ol>li{font-weight:400;font-size:11.5px;color:#555;margin-bottom:2px}
+/* ─── SECTION HEADER ─────────────────────────────────────────────────────── */
+.sec{display:flex;align-items:center;gap:16px;padding:18px 26px;border-radius:10px;margin:48px 0 26px;color:#fff;background:linear-gradient(90deg,#3a0d70,#8040c0)}
+.sec-num{font-size:36px;font-weight:900;opacity:.3;line-height:1;flex-shrink:0}
+.sec-title{font-size:19px;font-weight:800;letter-spacing:-.3px}
+.sec-title small{display:block;font-size:11px;font-weight:400;opacity:.75;margin-top:2px}
+h3{font-size:14px;font-weight:800;color:#4a0d8a;border-bottom:2px solid #e4d0ff;padding-bottom:6px;margin:30px 0 14px}
+h4{font-size:13px;font-weight:700;color:#1a1a2e;margin:18px 0 8px}
+p{margin-bottom:10px}
+/* ─── CARD ───────────────────────────────────────────────────────────────── */
+.card{background:#fff;border-radius:10px;padding:22px 26px;margin-bottom:20px;box-shadow:0 1px 5px rgba(0,0,0,.07);border-left:4px solid #6022a6}
+.card.blue{border-left-color:#0070f3}.card.green{border-left-color:#00a870}.card.orange{border-left-color:#e87722}.card.red{border-left-color:#d7373f}.card.gray{border-left-color:#aaa}
+/* ─── SCREENSHOT FRAME ───────────────────────────────────────────────────── */
+.screen-frame{background:#1e1e2e;border-radius:10px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,.35);margin:20px 0 28px}
+.screen-bar{background:#111126;padding:10px 16px;display:flex;align-items:center;gap:8px}
+.screen-bar .dot{width:11px;height:11px;border-radius:50%}
+.screen-bar .dot.r{background:#ff5f57}.screen-bar .dot.y{background:#febc2e}.screen-bar .dot.g{background:#28c840}
+.screen-bar .url{flex:1;background:#2a2a4a;border-radius:4px;padding:4px 12px;font-size:11px;color:#aaa;font-family:Consolas,monospace;margin:0 12px}
+.screen-body{background:#12121f}
+/* ─── CHALLENGE CARD ─────────────────────────────────────────────────────── */
+.ch{background:#fff;border-radius:8px;margin-bottom:12px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.07)}
+.ch-head{display:flex;align-items:center;gap:12px;padding:10px 16px;background:#faf5ff;border-bottom:1px solid #ebe0ff}
+.ch-id{background:#6022a6;color:#fff;font-size:10.5px;font-weight:800;padding:2px 10px;border-radius:12px;flex-shrink:0}
+.ch-title{font-size:13px;font-weight:700;color:#1a0533}
+.ch-body{display:grid;grid-template-columns:1fr 1fr}
+.ch-col{padding:11px 16px}
+.ch-col:first-child{border-right:1px solid #f0e8ff}
+.ch-lbl{font-size:9.5px;font-weight:800;text-transform:uppercase;letter-spacing:.8px;margin-bottom:5px}
+.ch-lbl.cause{color:#d7373f}.ch-lbl.fix{color:#00a870}
+.ch-col p{font-size:12px;color:#333;line-height:1.55}
+/* ─── MODE CARD ──────────────────────────────────────────────────────────── */
+.mode-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:18px 0}
+.mode{background:#fff;border-radius:10px;padding:20px;box-shadow:0 1px 5px rgba(0,0,0,.07);border-top:3px solid #6022a6}
+.mode .m-num{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:#6022a6;margin-bottom:6px}
+.mode .m-icon{font-size:26px;margin-bottom:6px}
+.mode .m-title{font-size:14px;font-weight:800;color:#1a0533;margin-bottom:7px}
+.mode .m-desc{font-size:12px;color:#444;line-height:1.55;margin-bottom:10px}
+.mode .m-best{background:#faf5ff;border-radius:4px;padding:5px 10px;font-size:11px;color:#6022a6;font-weight:700}
+.code-eg{background:#1a0533;color:#c8b8e8;border-radius:6px;padding:12px 16px;font-family:Consolas,monospace;font-size:11px;line-height:1.65;margin-top:10px;white-space:pre}
+.code-eg .cm{color:#666}.code-eg .hl{color:#c792ea;font-weight:700}.code-eg .st{color:#c3e88d}
+/* ─── MIGRATION CARD ─────────────────────────────────────────────────────── */
+.mig{background:#fff;border-radius:10px;margin-bottom:22px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.09)}
+.mig-head{display:flex;align-items:center;gap:18px;padding:18px 24px;color:#fff}
+.mig-head.a{background:linear-gradient(90deg,#0055cc,#3d8ef0)}
+.mig-head.b{background:linear-gradient(90deg,#4a0d8a,#8040c0)}
+.mig-head.c{background:linear-gradient(90deg,#b85c00,#f09030)}
+.mig-head.d{background:linear-gradient(90deg,#007a50,#2ec48a)}
+.mig-head.e{background:linear-gradient(90deg,#a01828,#e04050)}
+.mig-head.f{background:linear-gradient(90deg,#111126,#3a2060)}
+.mig-letter{font-size:38px;font-weight:900;opacity:.3;line-height:1}
+.mig-info .mig-title{font-size:17px;font-weight:800}
+.mig-info .mig-sub{font-size:11.5px;opacity:.8;margin-top:2px}
+.mig-body{padding:20px 24px}
+.src-tgt{display:flex;align-items:center;gap:10px;background:#f7f2ff;border-radius:6px;padding:10px 16px;margin-bottom:16px;font-size:12px}
+.src-tgt .arrow{font-size:20px;color:#6022a6;flex-shrink:0}
+.src-tgt .lbl{font-size:9.5px;text-transform:uppercase;letter-spacing:.5px;color:#888;margin-bottom:2px}
+.src-tgt .val{font-weight:700;color:#1a0533}
+.steps{list-style:none;counter-reset:s;margin:10px 0}
+.steps li{counter-increment:s;display:flex;align-items:flex-start;gap:10px;padding:6px 0;font-size:12px;border-bottom:1px dashed #ede8ff}
+.steps li:last-child{border-bottom:none}
+.steps li::before{content:counter(s);background:#6022a6;color:#fff;font-size:10px;font-weight:800;min-width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.auto{font-size:10px;background:#e6f9f2;color:#00833f;padding:1px 7px;border-radius:3px;font-weight:700;margin-left:5px}
+.manual{font-size:10px;background:#fff3e5;color:#b85c00;padding:1px 7px;border-radius:3px;font-weight:700;margin-left:5px}
+/* ─── TABLE ──────────────────────────────────────────────────────────────── */
+.tw{overflow-x:auto;border-radius:8px;box-shadow:0 1px 5px rgba(0,0,0,.08);margin:14px 0 22px}
+table{width:100%;border-collapse:collapse;font-size:12px;background:#fff}
+thead tr{background:#1a0533;color:#fff}
+thead th{padding:10px 14px;text-align:left;font-size:11px;font-weight:700;letter-spacing:.3px;white-space:nowrap}
+tbody td{padding:9px 14px;border-bottom:1px solid #ede8ff;vertical-align:top}
+tbody tr:nth-child(even){background:#faf7ff}
+tbody tr:hover{background:#f0e8ff}
+/* ─── BADGES ─────────────────────────────────────────────────────────────── */
+.b{display:inline-block;padding:2px 9px;border-radius:12px;font-size:10.5px;font-weight:800;white-space:nowrap}
+.bp{background:#f0e5ff;color:#5a1a9a}.bg{background:#e6f9f2;color:#007a50}.bo{background:#fff3e5;color:#b85c00}.br{background:#fde8e8;color:#b01c24}.bk{background:#f0f0f0;color:#555}.bb{background:#e5f0ff;color:#004db8}
+/* ─── CHECKLIST ──────────────────────────────────────────────────────────── */
+.cklist{list-style:none;margin:12px 0}
+.cklist li{display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-bottom:1px solid #f0e8ff;font-size:12.5px}
+.cklist li:last-child{border-bottom:none}
+.chkbox{width:18px;height:18px;border:2px solid #6022a6;border-radius:3px;flex-shrink:0;margin-top:1px}
+/* ─── FLOW ───────────────────────────────────────────────────────────────── */
+.flow{display:flex;flex-direction:column;align-items:center;margin:20px auto;max-width:460px}
+.fstep{width:100%;text-align:center;padding:10px 20px;border-radius:6px;font-size:12.5px;font-weight:700;color:#1a0533;background:#fff;border:1.5px solid #6022a6;margin:2px 0}
+.fstep.hi{background:#6022a6;color:#fff;border-color:#6022a6}
+.fstep.ac{background:#faf5ff}
+.farrow{font-size:22px;color:#6022a6;line-height:1}
+/* ─── INFO BOX ───────────────────────────────────────────────────────────── */
+.ib{border-radius:6px;padding:12px 16px;margin:12px 0;font-size:12px;line-height:1.6}
+.ib.note{background:#e8f0fe;border-left:4px solid #0070f3;color:#1a3a6e}
+.ib.tip{background:#e6f9f2;border-left:4px solid #00a870;color:#005c3b}
+.ib.warn{background:#fff3e5;border-left:4px solid #e87722;color:#7a3800}
+.ib.danger{background:#fde8e8;border-left:4px solid #d7373f;color:#7a1a1a}
+/* ─── FOOTER ─────────────────────────────────────────────────────────────── */
+.footer{background:#0d001f;color:rgba(255,255,255,.5);text-align:center;padding:22px;font-size:11px;margin-top:48px}
+.footer strong{color:rgba(255,255,255,.85)}
+@media print{body{background:#fff;font-size:11px}.cover{min-height:unset;page-break-after:always}.sec{page-break-before:always}.ch,.mode,.mig{break-inside:avoid}.wrap{padding:20px 28px}}
+</style>
+</head>
+<body>
+
+<!-- ═══ COVER ═══════════════════════════════════════════════════════════════ -->
+<div class="cover">
+  <div class="cover-badge"><span class="dot"></span>Adobe Experience Manager — Edge Delivery Services</div>
+  <h1><span>aemcoder.adobe.io</span>Experience Modernization Console<br>Tool Analysis</h1>
+  <p class="sub">Challenges &amp; Resolutions · 6 Usage Modes · 6 Migration Options<br>
+  Applied to the <strong>eds-events-gehealthcare</strong> project (bhasakatech)</p>
+  <div class="tags">
+    <span class="tag">Experience Modernization Agent</span>
+    <span class="tag">AEM Authoring + Universal Editor</span>
+    <span class="tag">Edge Delivery Services</span>
+    <span class="tag">AI-Assisted Development</span>
+    <span class="tag">GitHub Integration</span>
+    <span class="tag">Figma Migration</span>
+  </div>
+  <dl class="meta">
+    <div><dt>Project</dt><dd>eds-events-gehealthcare</dd></div>
+    <div><dt>Organisation</dt><dd>bhasakatech</dd></div>
+    <div><dt>Date</dt><dd>October 2026</dd></div>
+    <div><dt>Authoring Type</dt><dd>AEM Sites + Universal Editor</dd></div>
+    <div><dt>Total Blocks</dt><dd>27 custom blocks</dd></div>
+    <div><dt>Primary Migration Path</dt><dd>Option B — Live → AEM UE</dd></div>
+  </dl>
+</div>
+
+<div class="wrap">
+
+<!-- ═══ TOC ════════════════════════════════════════════════════════════════ -->
+<div class="toc">
+  <h2>Table of Contents</h2>
+  <ol>
+    <li>What is AEM Coder — Overview &amp; Console Architecture</li>
+    <li>Console UI — Annotated Screen-by-Screen Walkthrough
+      <ol>
+        <li>Home Page</li><li>Chat Page — Chat Panel &amp; Workspace Panel</li>
+        <li>Content Views (Preview / Document / HTML / Markdown / JCR)</li>
+        <li>Code Views (Files &amp; Changes)</li>
+        <li>Settings Page</li><li>Push Modal / PR Creation</li>
+      </ol>
+    </li>
+    <li>Challenges &amp; How to Resolve Them (24 challenges, 5 categories)
+      <ol>
+        <li>Access &amp; Setup (C1–C5)</li><li>Content Migration (C6–C11)</li>
+        <li>AI Context &amp; Prompts (C12–C15)</li>
+        <li>AEM Authoring / Universal Editor (C16–C19)</li>
+        <li>Code Quality &amp; Deployment (C20–C24)</li>
+      </ol>
+    </li>
+    <li>How Many Ways to Use This Tool — 6 Usage Modes</li>
+    <li>Migration Options Available — 6 Pathways + Comparison Table</li>
+    <li>Application to This Project — Block Inventory, Checklist, First Prompts</li>
+    <li>Governance &amp; Deployment Flow</li>
+  </ol>
+</div>
+
+<!-- ═══ SECTION 1 — OVERVIEW ════════════════════════════════════════════════ -->
+<div class="sec" style="margin-top:0">
+  <div class="sec-num">01</div>
+  <div class="sec-title">What is AEM Coder<small>Experience Modernization Console — aemcoder.adobe.io — Last updated October 9, 2026</small></div>
+</div>
+<div class="card">
+  <p><strong>aemcoder.adobe.io</strong> is Adobe's <strong>Experience Modernization Console</strong> — a hosted, browser-based, AI-assisted development environment for Edge Delivery Services (EDS). It connects directly to your GitHub repository and enables developers and non-developers to interact with their EDS site using natural-language prompts, with zero local environment required.</p>
+  <p style="margin-top:10px">It is part of the <strong>Brand Experience Agent</strong> family in AEM as a Cloud Service and accelerates website migrations, block development, design extraction, and ongoing site maintenance through AI automation combined with full developer governance.</p>
+</div>
+
+<h3>Core Capability Summary</h3>
+<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin:0 0 22px">
+  <div style="background:#fff;border-radius:8px;padding:16px;box-shadow:0 1px 4px rgba(0,0,0,.07);border-top:3px solid #6022a6">
+    <div style="font-size:22px;margin-bottom:6px">💬</div>
+    <div style="font-weight:800;font-size:12.5px;margin-bottom:4px">Interactive AI Chat</div>
+    <div style="font-size:11.5px;color:#555">Natural-language prompts drive all operations. Plan or Execute mode.</div>
+  </div>
+  <div style="background:#fff;border-radius:8px;padding:16px;box-shadow:0 1px 4px rgba(0,0,0,.07);border-top:3px solid #0070f3">
+    <div style="font-size:22px;margin-bottom:6px">👁️</div>
+    <div style="font-weight:800;font-size:12.5px;margin-bottom:4px">Live AEM Preview</div>
+    <div style="font-size:11.5px;color:#555">See changes rendered instantly. Desktop, tablet, mobile viewports.</div>
+  </div>
+  <div style="background:#fff;border-radius:8px;padding:16px;box-shadow:0 1px 4px rgba(0,0,0,.07);border-top:3px solid #00a870">
+    <div style="font-size:22px;margin-bottom:6px">🔀</div>
+    <div style="font-weight:800;font-size:12.5px;margin-bottom:4px">Code Diff Viewer</div>
+    <div style="font-size:11.5px;color:#555">Review every AI-generated file change as a diff before staging or pushing.</div>
+  </div>
+  <div style="background:#fff;border-radius:8px;padding:16px;box-shadow:0 1px 4px rgba(0,0,0,.07);border-top:3px solid #e87722">
+    <div style="font-size:22px;margin-bottom:6px">🐙</div>
+    <div style="font-weight:800;font-size:12.5px;margin-bottom:4px">GitHub Integration</div>
+    <div style="font-size:11.5px;color:#555">Stage, branch, sync, push, and create PRs — all inside the console.</div>
+  </div>
+  <div style="background:#fff;border-radius:8px;padding:16px;box-shadow:0 1px 4px rgba(0,0,0,.07);border-top:3px solid #d7373f">
+    <div style="font-size:22px;margin-bottom:6px">🎨</div>
+    <div style="font-weight:800;font-size:12.5px;margin-bottom:4px">Figma Integration</div>
+    <div style="font-size:11.5px;color:#555">Extract design tokens and migrate blocks directly from Figma files.</div>
+  </div>
+  <div style="background:#fff;border-radius:8px;padding:16px;box-shadow:0 1px 4px rgba(0,0,0,.07);border-top:3px solid #9b59b6">
+    <div style="font-size:22px;margin-bottom:6px">📋</div>
+    <div style="font-weight:800;font-size:12.5px;margin-bottom:4px">Project Documentation</div>
+    <div style="font-size:11.5px;color:#555">Auto-generate Author, Developer, Admin PDF guides for project handover.</div>
+  </div>
+</div>
+
+<!-- ═══ SECTION 2 — UI SCREENS ══════════════════════════════════════════════ -->
+<div class="sec">
+  <div class="sec-num">02</div>
+  <div class="sec-title">Console UI — Screen-by-Screen Walkthrough<small>Annotated mockups based on official Adobe documentation (October 2026)</small></div>
+</div>
+
+<!-- ── Screen 1: Home Page ──────────────────────────────────────────────── -->
+<h3>Screen 1 — Home Page</h3>
+<p style="font-size:12px;color:#555;margin-bottom:12px">The Home Page is your starting point after sign-in. Navigate here anytime by clicking the <strong>Adobe Experience Manager</strong> title in the top-left.</p>
+
+<div class="screen-frame">
+  <div class="screen-bar">
+    <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
+    <span class="url">aemcoder.adobe.io</span>
+    <span style="font-size:10px;color:#666">● Request Support &nbsp;|&nbsp; Account ▾</span>
+  </div>
+  <div class="screen-body">
+    <svg viewBox="0 0 900 460" xmlns="http://www.w3.org/2000/svg" style="display:block;width:100%">
+      <rect width="900" height="460" fill="#12121f"/>
+      <!-- Top nav bar -->
+      <rect width="900" height="44" fill="#1a1a30"/>
+      <text x="18" y="27" font-family="Arial" font-size="13" font-weight="bold" fill="#c8b0e8">⬡ Adobe Experience Manager</text>
+      <rect x="700" y="10" width="100" height="24" rx="4" fill="#2a2a50" stroke="#4a3080" stroke-width="1"/>
+      <text x="750" y="26" font-family="Arial" font-size="11" fill="#aaa" text-anchor="middle">Request Support</text>
+      <rect x="815" y="10" width="70" height="24" rx="4" fill="#3a0d70" stroke="#6022a6" stroke-width="1"/>
+      <text x="850" y="26" font-family="Arial" font-size="11" fill="#fff" text-anchor="middle">Account ▾</text>
+      <!-- Hero text -->
+      <text x="450" y="105" font-family="Arial" font-size="22" font-weight="bold" fill="#ffffff" text-anchor="middle">What would you like to build today?</text>
+      <text x="450" y="128" font-family="Arial" font-size="12" fill="#8888aa" text-anchor="middle">Connected to: bhasakatech / eds-events-gehealthcare</text>
+      <!-- Prompt box -->
+      <rect x="100" y="148" width="700" height="52" rx="8" fill="#1e1e3a" stroke="#4a3080" stroke-width="1.5"/>
+      <text x="125" y="179" font-family="Arial" font-size="12" fill="#666688">Ask me to migrate a page, critique a block, develop a component…</text>
+      <rect x="756" y="156" width="36" height="36" rx="6" fill="#6022a6"/>
+      <text x="774" y="179" font-family="Arial" font-size="14" fill="#fff" text-anchor="middle">💡</text>
+      <rect x="796" y="156" width="36" height="36" rx="6" fill="#2a2a4a" stroke="#4a3080" stroke-width="1"/>
+      <text x="814" y="179" font-family="Arial" font-size="11" fill="#aaa" text-anchor="middle">📎</text>
+      <!-- Mode labels -->
+      <text x="774" y="204" font-family="Arial" font-size="9" fill="#9966cc" text-anchor="middle">Plan</text>
+      <text x="814" y="204" font-family="Arial" font-size="9" fill="#888" text-anchor="middle">Files</text>
+      <!-- Suggested prompts label -->
+      <text x="450" y="232" font-family="Arial" font-size="11" fill="#6666aa" text-anchor="middle">— Suggested prompts —</text>
+      <!-- Prompt chips row 1 -->
+      <rect x="62" y="245" width="240" height="42" rx="6" fill="#1e1e3a" stroke="#3a2a60" stroke-width="1"/>
+      <text x="182" y="261" font-family="Arial" font-size="10.5" fill="#c8b0e8" text-anchor="middle" font-weight="bold">🔍 Scope my site</text>
+      <text x="182" y="278" font-family="Arial" font-size="9.5" fill="#7777aa" text-anchor="middle">Catalog all pages and templates</text>
+      <rect x="330" y="245" width="240" height="42" rx="6" fill="#1e1e3a" stroke="#3a2a60" stroke-width="1"/>
+      <text x="450" y="261" font-family="Arial" font-size="10.5" fill="#c8b0e8" text-anchor="middle" font-weight="bold">🚀 Migrate a page</text>
+      <text x="450" y="278" font-family="Arial" font-size="9.5" fill="#7777aa" text-anchor="middle">Import content from a URL</text>
+      <rect x="598" y="245" width="240" height="42" rx="6" fill="#1e1e3a" stroke="#3a2a60" stroke-width="1"/>
+      <text x="718" y="261" font-family="Arial" font-size="10.5" fill="#c8b0e8" text-anchor="middle" font-weight="bold">🎨 Migrate design</text>
+      <text x="718" y="278" font-family="Arial" font-size="9.5" fill="#7777aa" text-anchor="middle">Extract styles from source site</text>
+      <!-- Prompt chips row 2 -->
+      <rect x="62" y="300" width="240" height="42" rx="6" fill="#1e1e3a" stroke="#3a2a60" stroke-width="1"/>
+      <text x="182" y="316" font-family="Arial" font-size="10.5" fill="#c8b0e8" text-anchor="middle" font-weight="bold">🧱 Create a block</text>
+      <text x="182" y="333" font-family="Arial" font-size="9.5" fill="#7777aa" text-anchor="middle">Build a new EDS component</text>
+      <rect x="330" y="300" width="240" height="42" rx="6" fill="#1e1e3a" stroke="#3a2a60" stroke-width="1"/>
+      <text x="450" y="316" font-family="Arial" font-size="10.5" fill="#c8b0e8" text-anchor="middle" font-weight="bold">✅ Critique a block</text>
+      <text x="450" y="333" font-family="Arial" font-size="9.5" fill="#7777aa" text-anchor="middle">Validate against source for fidelity</text>
+      <rect x="598" y="300" width="240" height="42" rx="6" fill="#1e1e3a" stroke="#3a2a60" stroke-width="1"/>
+      <text x="718" y="316" font-family="Arial" font-size="10.5" fill="#c8b0e8" text-anchor="middle" font-weight="bold">📄 Document project</text>
+      <text x="718" y="333" font-family="Arial" font-size="9.5" fill="#7777aa" text-anchor="middle">Generate Author / Dev / Admin guides</text>
+      <!-- CTA buttons -->
+      <rect x="310" y="362" width="130" height="34" rx="6" fill="#6022a6"/>
+      <text x="375" y="383" font-family="Arial" font-size="12" font-weight="bold" fill="#fff" text-anchor="middle">Start chatting →</text>
+      <rect x="460" y="362" width="130" height="34" rx="6" fill="#2a2a4a" stroke="#4a3080" stroke-width="1"/>
+      <text x="525" y="383" font-family="Arial" font-size="12" fill="#aaa" text-anchor="middle">⚙ Settings</text>
+      <!-- Callout annotations -->
+      <line x1="100" y1="174" x2="58" y2="222" stroke="#ff9900" stroke-width="1" stroke-dasharray="3,2"/>
+      <rect x="2" y="213" width="56" height="18" rx="3" fill="#ff9900"/>
+      <text x="30" y="225" font-family="Arial" font-size="8.5" fill="#000" text-anchor="middle" font-weight="bold">Prompt Input</text>
+      <line x1="756" y1="174" x2="830" y2="213" stroke="#44ccff" stroke-width="1" stroke-dasharray="3,2"/>
+      <rect x="830" y="207" width="66" height="18" rx="3" fill="#44ccff"/>
+      <text x="863" y="219" font-family="Arial" font-size="8.5" fill="#000" text-anchor="middle" font-weight="bold">Plan / Execute</text>
+      <line x1="375" y1="396" x2="300" y2="432" stroke="#88ff88" stroke-width="1" stroke-dasharray="3,2"/>
+      <rect x="230" y="425" width="70" height="16" rx="3" fill="#88ff88"/>
+      <text x="265" y="436" font-family="Arial" font-size="8.5" fill="#000" text-anchor="middle" font-weight="bold">Start Chatting</text>
+    </svg>
+  </div>
+</div>
+<div class="ib note"><strong>What's on the Home Page:</strong> Prompt input (top), suggested prompt chips (6 quick-start actions), Start Chatting button, Settings button. The top menu bar always shows: AEM title (home link), Request Support, Account (dark mode / sign out).</div>
+
+<!-- ── Screen 2: Chat Page ──────────────────────────────────────────────── -->
+<h3>Screen 2 — Chat Page (Main Interface)</h3>
+<p style="font-size:12px;color:#555;margin-bottom:12px">The Chat Page is split into a resizable <strong>Chat Panel</strong> (left) and a <strong>Workspace Panel</strong> (right). This is where all active work happens.</p>
+
+<div class="screen-frame">
+  <div class="screen-bar">
+    <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
+    <span class="url">aemcoder.adobe.io/chat</span>
+    <span style="font-size:10px;color:#666">● Request Support &nbsp;|&nbsp; Account ▾</span>
+  </div>
+  <div class="screen-body">
+    <svg viewBox="0 0 900 520" xmlns="http://www.w3.org/2000/svg" style="display:block;width:100%">
+      <rect width="900" height="520" fill="#12121f"/>
+      <!-- Top nav -->
+      <rect width="900" height="40" fill="#1a1a30"/>
+      <text x="18" y="25" font-family="Arial" font-size="12" font-weight="bold" fill="#c8b0e8">⬡ Adobe Experience Manager</text>
+      <text x="740" y="25" font-family="Arial" font-size="10" fill="#888">Request Support</text>
+      <text x="848" y="25" font-family="Arial" font-size="10" fill="#888">Account ▾</text>
+      <!-- LEFT PANEL — Chat -->
+      <rect x="0" y="40" width="320" height="480" fill="#16162a"/>
+      <!-- Chat header -->
+      <rect x="0" y="40" width="320" height="38" fill="#1e1e38"/>
+      <text x="16" y="63" font-family="Arial" font-size="11" fill="#9988cc">🏠 Home</text>
+      <text x="70" y="63" font-family="Arial" font-size="11" fill="#9988cc">⚙ Settings</text>
+      <text x="200" y="63" font-family="Arial" font-size="11" fill="#666688">🗑 Clear</text>
+      <text x="248" y="63" font-family="Arial" font-size="11" fill="#666688">⬇ Download</text>
+      <line x1="0" y1="78" x2="320" y2="78" stroke="#2a2a45" stroke-width="1"/>
+      <!-- Chat messages -->
+      <rect x="16" y="90" width="270" height="36" rx="6" fill="#2a2a4a"/>
+      <text x="26" y="107" font-family="Arial" font-size="10.5" fill="#c8b0e8">Warm up by reading the project docs</text>
+      <text x="26" y="120" font-family="Arial" font-size="9" fill="#6666aa">You · 09:14</text>
+      <rect x="30" y="136" width="260" height="50" rx="6" fill="#1e1e3a" stroke="#3a2a60" stroke-width="1"/>
+      <text x="42" y="153" font-family="Arial" font-size="10" fill="#88ee88">✓ Read AGENTS.md · CLAUDE.md · README.md</text>
+      <text x="42" y="166" font-family="Arial" font-size="10" fill="#ccbbee">Ready. I know this is an AEM authoring project</text>
+      <text x="42" y="179" font-family="Arial" font-size="10" fill="#ccbbee">with 27 blocks using Universal Editor.</text>
+      <text x="42" y="193" font-family="Arial" font-size="9" fill="#6666aa">Agent · 09:14</text>
+      <rect x="16" y="200" width="270" height="36" rx="6" fill="#2a2a4a"/>
+      <text x="26" y="217" font-family="Arial" font-size="10.5" fill="#c8b0e8">Migrate this page: https://events.gehealth…</text>
+      <text x="26" y="230" font-family="Arial" font-size="9" fill="#6666aa">You · 09:15</text>
+      <!-- Agent working -->
+      <rect x="30" y="246" width="260" height="86" rx="6" fill="#1e1e3a" stroke="#3a2a60" stroke-width="1"/>
+      <text x="42" y="263" font-family="Arial" font-size="10" fill="#ffcc44">⚡ Scraping source page…</text>
+      <rect x="42" y="270" width="160" height="5" rx="2" fill="#2a2a4a"/>
+      <rect x="42" y="270" width="110" height="5" rx="2" fill="#6022a6"/>
+      <text x="42" y="290" font-family="Arial" font-size="10" fill="#88aaff">→ Identifying 5 sections</text>
+      <text x="42" y="305" font-family="Arial" font-size="10" fill="#88aaff">→ Authoring analysis (David's Model)</text>
+      <text x="42" y="320" font-family="Arial" font-size="10" fill="#aaa">→ Mapping to event-hero, event-list…</text>
+      <text x="42" y="334" font-family="Arial" font-size="9" fill="#6666aa">Agent · 09:15 — working…</text>
+      <!-- Chat input at bottom -->
+      <rect x="8" y="450" width="304" height="44" rx="6" fill="#1e1e3a" stroke="#4a3080" stroke-width="1"/>
+      <text x="22" y="476" font-family="Arial" font-size="11" fill="#555577">Ask a follow-up question…</text>
+      <rect x="270" y="458" width="30" height="28" rx="5" fill="#6022a6"/>
+      <text x="285" y="477" font-family="Arial" font-size="13" fill="#fff" text-anchor="middle">▶</text>
+      <!-- Resize handle -->
+      <rect x="318" y="120" width="4" height="280" rx="2" fill="#3a2a60"/>
+      <!-- RIGHT PANEL — Workspace -->
+      <rect x="322" y="40" width="578" height="480" fill="#12121f"/>
+      <!-- Workspace header -->
+      <rect x="322" y="40" width="578" height="38" fill="#1a1a2e"/>
+      <!-- View picker tabs -->
+      <rect x="330" y="48" width="70" height="22" rx="4" fill="#6022a6"/>
+      <text x="365" y="63" font-family="Arial" font-size="10" fill="#fff" text-anchor="middle">🔍 Preview</text>
+      <rect x="406" y="48" width="66" height="22" rx="4" fill="#2a2a40"/>
+      <text x="439" y="63" font-family="Arial" font-size="10" fill="#888" text-anchor="middle">📄 Doc</text>
+      <rect x="478" y="48" width="54" height="22" rx="4" fill="#2a2a40"/>
+      <text x="505" y="63" font-family="Arial" font-size="10" fill="#888" text-anchor="middle">&lt;/&gt; HTML</text>
+      <rect x="538" y="48" width="56" height="22" rx="4" fill="#2a2a40"/>
+      <text x="566" y="63" font-family="Arial" font-size="10" fill="#888" text-anchor="middle">¶ MD</text>
+      <rect x="600" y="48" width="54" height="22" rx="4" fill="#2a2a40"/>
+      <text x="627" y="63" font-family="Arial" font-size="10" fill="#888" text-anchor="middle">⚙ Code</text>
+      <!-- Workspace action icons -->
+      <text x="680" y="63" font-family="Arial" font-size="18" fill="#6666aa">↻</text>
+      <text x="706" y="63" font-family="Arial" font-size="12" fill="#6666aa">📱</text>
+      <text x="730" y="63" font-family="Arial" font-size="12" fill="#6666aa">⊹</text>
+      <text x="754" y="63" font-family="Arial" font-size="12" fill="#6666aa">↗</text>
+      <rect x="772" y="50" width="80" height="20" rx="4" fill="#00a870"/>
+      <text x="812" y="63" font-family="Arial" font-size="9.5" fill="#fff" text-anchor="middle">⬆ Upload</text>
+      <line x1="322" y1="78" x2="900" y2="78" stroke="#2a2a40" stroke-width="1"/>
+      <!-- File browser (left side of workspace) -->
+      <rect x="322" y="78" width="120" height="442" fill="#16162a"/>
+      <text x="332" y="96" font-family="Arial" font-size="10" font-weight="bold" fill="#8877bb">PAGES</text>
+      <text x="332" y="113" font-family="Arial" font-size="10" fill="#ccbbee">📄 /</text>
+      <rect x="330" y="118" width="108" height="18" rx="3" fill="#3a2060"/>
+      <text x="342" y="130" font-family="Arial" font-size="10" fill="#fff">📄 /rsna-2026</text>
+      <text x="342" y="148" font-family="Arial" font-size="10" fill="#aaa">📄 /hims-2026</text>
+      <text x="342" y="166" font-family="Arial" font-size="10" fill="#aaa">📄 /acc-2026</text>
+      <text x="342" y="184" font-family="Arial" font-size="10" fill="#aaa">📄 /nav</text>
+      <text x="342" y="202" font-family="Arial" font-size="10" fill="#aaa">📄 /footer</text>
+      <!-- Preview area -->
+      <rect x="442" y="78" width="458" height="442" fill="#f0f0f8"/>
+      <!-- Mock page preview: event hero -->
+      <rect x="442" y="78" width="458" height="110" fill="#6022a6"/>
+      <text x="462" y="108" font-family="Arial" font-size="14" font-weight="bold" fill="#fff">RSNA 2026 — GE HealthCare</text>
+      <text x="462" y="127" font-family="Arial" font-size="11" fill="#ddd">November 30 – December 4 | Chicago, IL</text>
+      <rect x="462" y="140" width="90" height="22" rx="3" fill="none" stroke="#fff" stroke-width="1"/>
+      <text x="507" y="155" font-family="Arial" font-size="10" fill="#fff" text-anchor="middle">See what's new</text>
+      <!-- mock sections -->
+      <rect x="452" y="200" width="438" height="55" rx="4" fill="#fff" stroke="#ddd" stroke-width="1"/>
+      <text x="468" y="218" font-family="Arial" font-size="10" font-weight="bold" fill="#333">Event Details</text>
+      <text x="468" y="232" font-family="Arial" font-size="9.5" fill="#666">Location · Booth · Registration CTA</text>
+      <rect x="452" y="265" width="438" height="55" rx="4" fill="#fff" stroke="#ddd" stroke-width="1"/>
+      <text x="468" y="283" font-family="Arial" font-size="10" font-weight="bold" fill="#333">Featured Sessions</text>
+      <text x="468" y="297" font-family="Arial" font-size="9.5" fill="#666">Theater sessions listing block</text>
+      <!-- Callout annotations -->
+      <line x1="322" y1="150" x2="290" y2="185" stroke="#ff9900" stroke-width="1" stroke-dasharray="3,2"/>
+      <rect x="220" y="178" width="70" height="16" rx="3" fill="#ff9900"/>
+      <text x="255" y="189" font-family="Arial" font-size="8.5" fill="#000" text-anchor="middle" font-weight="bold">File Browser</text>
+      <line x1="670" y1="78" x2="700" y2="60" stroke="#44ccff" stroke-width="1" stroke-dasharray="3,2"/>
+      <rect x="700" y="44" width="54" height="16" rx="3" fill="#44ccff"/>
+      <text x="727" y="55" font-family="Arial" font-size="8.5" fill="#000" text-anchor="middle" font-weight="bold">View Picker</text>
+    </svg>
+  </div>
+</div>
+
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:12px 0 22px">
+  <div class="ib note" style="margin:0"><strong>Chat Panel (left):</strong> Conversation history, prompt input, Clear chat / Download chat actions. Header links: Home, Settings.</div>
+  <div class="ib tip" style="margin:0"><strong>Workspace Panel (right):</strong> View picker (Preview/Doc/HTML/MD/JCR/Code), file browser, live preview area. Toolbar: Refresh, Responsive mode, Inspect, New window, Upload.</div>
+</div>
+
+<!-- ── Screen 3: Content Views toolbar ──────────────────────────────────── -->
+<h3>Screen 3 — Content Views Toolbar (All 5 Views + Actions)</h3>
+<p style="font-size:12px;color:#555;margin-bottom:12px">The workspace header changes based on the selected view. Every view has a set of toolbar actions.</p>
+
+<div class="screen-frame">
+  <div class="screen-bar">
+    <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
+    <span class="url">aemcoder.adobe.io/chat — Content Views</span>
+  </div>
+  <div class="screen-body">
+    <svg viewBox="0 0 900 320" xmlns="http://www.w3.org/2000/svg" style="display:block;width:100%">
+      <rect width="900" height="320" fill="#12121f"/>
+      <!-- Workspace toolbar row -->
+      <rect x="0" y="0" width="900" height="46" fill="#1a1a2e"/>
+      <!-- View tabs with labels -->
+      <rect x="8" y="8" width="78" height="28" rx="5" fill="#6022a6"/>
+      <text x="47" y="26" font-family="Arial" font-size="11" fill="#fff" text-anchor="middle">🔍 Preview</text>
+      <rect x="92" y="8" width="72" height="28" rx="5" fill="#252540"/>
+      <text x="128" y="26" font-family="Arial" font-size="11" fill="#888" text-anchor="middle">📄 Document</text>
+      <rect x="170" y="8" width="66" height="28" rx="5" fill="#252540"/>
+      <text x="203" y="26" font-family="Arial" font-size="11" fill="#888" text-anchor="middle">&lt;/&gt; HTML</text>
+      <rect x="242" y="8" width="72" height="28" rx="5" fill="#252540"/>
+      <text x="278" y="26" font-family="Arial" font-size="11" fill="#888" text-anchor="middle">¶ Markdown</text>
+      <rect x="320" y="8" width="72" height="28" rx="5" fill="#252540"/>
+      <text x="356" y="26" font-family="Arial" font-size="11" fill="#888" text-anchor="middle">⊞ JCR XML</text>
+      <!-- Right-side action icons with labels -->
+      <text x="470" y="28" font-family="Arial" font-size="18" fill="#7766aa">↻</text>
+      <text x="500" y="28" font-family="Arial" font-size="14" fill="#7766aa">📱</text>
+      <text x="530" y="28" font-family="Arial" font-size="14" fill="#7766aa">⊹</text>
+      <text x="558" y="28" font-family="Arial" font-size="14" fill="#7766aa">↗</text>
+      <text x="586" y="28" font-family="Arial" font-size="14" fill="#7766aa">🗑</text>
+      <text x="614" y="28" font-family="Arial" font-size="14" fill="#cc4444">⚠</text>
+      <rect x="644" y="10" width="86" height="26" rx="4" fill="#00a870"/>
+      <text x="687" y="27" font-family="Arial" font-size="11" fill="#fff" text-anchor="middle">⬆ Upload</text>
+      <!-- Annotation lines and labels for each icon -->
+      <line x1="47" y1="36" x2="47" y2="80" stroke="#6022a6" stroke-width="1" stroke-dasharray="3,2"/>
+      <rect x="6" y="82" width="80" height="26" rx="4" fill="#3a0d70"/>
+      <text x="46" y="99" font-family="Arial" font-size="9" fill="#fff" text-anchor="middle">Preview rendered</text>
+      <text x="46" y="109" font-family="Arial" font-size="9" fill="#fff" text-anchor="middle">HTML content</text>
+      <line x1="128" y1="36" x2="128" y2="80" stroke="#0070f3" stroke-width="1" stroke-dasharray="3,2"/>
+      <rect x="87" y="82" width="80" height="26" rx="4" fill="#003380"/>
+      <text x="127" y="99" font-family="Arial" font-size="9" fill="#fff" text-anchor="middle">Document Authoring</text>
+      <text x="127" y="109" font-family="Arial" font-size="9" fill="#fff" text-anchor="middle">content structure</text>
+      <line x1="203" y1="36" x2="203" y2="80" stroke="#00a870" stroke-width="1" stroke-dasharray="3,2"/>
+      <rect x="163" y="82" width="78" height="26" rx="4" fill="#005c3b"/>
+      <text x="202" y="99" font-family="Arial" font-size="9" fill="#fff" text-anchor="middle">Raw plain HTML</text>
+      <text x="202" y="109" font-family="Arial" font-size="9" fill="#fff" text-anchor="middle">no scripts/styles</text>
+      <line x1="278" y1="36" x2="278" y2="80" stroke="#e87722" stroke-width="1" stroke-dasharray="3,2"/>
+      <rect x="237" y="82" width="80" height="26" rx="4" fill="#7a3800"/>
+      <text x="277" y="99" font-family="Arial" font-size="9" fill="#fff" text-anchor="middle">Markdown structure</text>
+      <text x="277" y="109" font-family="Arial" font-size="9" fill="#fff" text-anchor="middle">AEM authoring</text>
+      <line x1="356" y1="36" x2="356" y2="80" stroke="#d7373f" stroke-width="1" stroke-dasharray="3,2"/>
+      <rect x="315" y="82" width="80" height="26" rx="4" fill="#7a1a1a"/>
+      <text x="355" y="99" font-family="Arial" font-size="9" fill="#fff" text-anchor="middle">JCR XML content</text>
+      <text x="355" y="109" font-family="Arial" font-size="9" fill="#fff" text-anchor="middle">AEM authoring only</text>
+      <!-- Action icon annotations -->
+      <line x1="470" y1="36" x2="470" y2="130" stroke="#aaa" stroke-width="1" stroke-dasharray="3,2"/>
+      <rect x="436" y="132" width="68" height="16" rx="3" fill="#444"/>
+      <text x="470" y="143" font-family="Arial" font-size="8.5" fill="#fff" text-anchor="middle">Refresh preview</text>
+      <line x1="500" y1="36" x2="500" y2="130" stroke="#aaa" stroke-width="1" stroke-dasharray="3,2"/>
+      <rect x="466" y="132" width="68" height="16" rx="3" fill="#444"/>
+      <text x="500" y="143" font-family="Arial" font-size="8.5" fill="#fff" text-anchor="middle">Responsive mode</text>
+      <line x1="530" y1="36" x2="530" y2="130" stroke="#aaa" stroke-width="1" stroke-dasharray="3,2"/>
+      <rect x="496" y="132" width="68" height="16" rx="3" fill="#444"/>
+      <text x="530" y="143" font-family="Arial" font-size="8.5" fill="#fff" text-anchor="middle">Inspect mode</text>
+      <line x1="558" y1="36" x2="558" y2="130" stroke="#aaa" stroke-width="1" stroke-dasharray="3,2"/>
+      <rect x="524" y="132" width="68" height="16" rx="3" fill="#444"/>
+      <text x="558" y="143" font-family="Arial" font-size="8.5" fill="#fff" text-anchor="middle">Open new window</text>
+      <line x1="587" y1="36" x2="587" y2="130" stroke="#aaa" stroke-width="1" stroke-dasharray="3,2"/>
+      <rect x="553" y="132" width="68" height="16" rx="3" fill="#444"/>
+      <text x="587" y="143" font-family="Arial" font-size="8.5" fill="#fff" text-anchor="middle">Delete page</text>
+      <line x1="614" y1="36" x2="614" y2="130" stroke="#cc4444" stroke-width="1" stroke-dasharray="3,2"/>
+      <rect x="580" y="132" width="68" height="16" rx="3" fill="#7a1a1a"/>
+      <text x="614" y="143" font-family="Arial" font-size="8.5" fill="#fff" text-anchor="middle">View errors</text>
+      <line x1="687" y1="36" x2="687" y2="130" stroke="#00a870" stroke-width="1" stroke-dasharray="3,2"/>
+      <rect x="643" y="132" width="88" height="16" rx="3" fill="#005c3b"/>
+      <text x="687" y="143" font-family="Arial" font-size="8.5" fill="#fff" text-anchor="middle">Upload to AEM / DA</text>
+      <!-- Responsive mode detail -->
+      <rect x="30" y="180" width="260" height="110" rx="8" fill="#1e1e38" stroke="#3a2060" stroke-width="1"/>
+      <text x="160" y="200" font-family="Arial" font-size="11" font-weight="bold" fill="#c8b0e8" text-anchor="middle">Responsive Mode — 3 Viewports</text>
+      <rect x="50" y="210" width="60" height="40" rx="3" fill="#3a2060" stroke="#6022a6" stroke-width="1.5"/>
+      <text x="80" y="235" font-family="Arial" font-size="9.5" fill="#fff" text-anchor="middle">🖥 Desktop</text>
+      <rect x="130" y="215" width="50" height="35" rx="3" fill="#2a2040" stroke="#4a3080" stroke-width="1"/>
+      <text x="155" y="237" font-family="Arial" font-size="9.5" fill="#aaa" text-anchor="middle">📱 Tablet</text>
+      <rect x="200" y="220" width="40" height="30" rx="3" fill="#2a2040" stroke="#4a3080" stroke-width="1"/>
+      <text x="220" y="239" font-family="Arial" font-size="9" fill="#aaa" text-anchor="middle">📱 Mobile</text>
+      <text x="160" y="278" font-family="Arial" font-size="9" fill="#7766aa" text-anchor="middle">Active viewport highlighted in purple</text>
+      <!-- Inspect mode detail -->
+      <rect x="320" y="180" width="260" height="110" rx="8" fill="#1e1e38" stroke="#3a2060" stroke-width="1"/>
+      <text x="450" y="200" font-family="Arial" font-size="11" font-weight="bold" fill="#c8b0e8" text-anchor="middle">Inspect Mode — Add Element to Chat</text>
+      <rect x="340" y="210" width="240" height="60" rx="4" fill="#6022a6" opacity="0.3" stroke="#9944ee" stroke-width="1.5" stroke-dasharray="4,2"/>
+      <text x="450" y="230" font-family="Arial" font-size="10" fill="#c8b0e8" text-anchor="middle">← Click any element on preview</text>
+      <text x="450" y="246" font-family="Arial" font-size="10" fill="#c8b0e8" text-anchor="middle">Its HTML is attached to your prompt</text>
+      <text x="450" y="262" font-family="Arial" font-size="9" fill="#9944ee" text-anchor="middle">Selected element shown with purple outline</text>
+      <text x="450" y="278" font-family="Arial" font-size="9" fill="#7766aa" text-anchor="middle">Use: "Fix the font size of this element"</text>
+      <!-- Upload dialog detail -->
+      <rect x="610" y="180" width="270" height="110" rx="8" fill="#1e1e38" stroke="#005c3b" stroke-width="1"/>
+      <text x="745" y="200" font-family="Arial" font-size="11" font-weight="bold" fill="#c8b0e8" text-anchor="middle">Upload Content Dialog</text>
+      <text x="625" y="220" font-family="Arial" font-size="9.5" fill="#888">Org:</text>
+      <rect x="645" y="210" width="80" height="16" rx="3" fill="#2a2040"/><text x="650" y="222" font-family="Arial" font-size="9" fill="#aaa">bhasakatech</text>
+      <text x="740" y="220" font-family="Arial" font-size="9.5" fill="#888">Repo:</text>
+      <rect x="763" y="210" width="100" height="16" rx="3" fill="#2a2040"/><text x="767" y="222" font-family="Arial" font-size="9" fill="#aaa">eds-events-gehealt…</text>
+      <rect x="625" y="232" width="238" height="18" rx="3" fill="#2a2040" stroke="#4a3080" stroke-width="1"/>
+      <text x="735" y="245" font-family="Arial" font-size="9.5" fill="#aaa" text-anchor="middle">☑ /rsna-2026 &nbsp;☑ /hims-2026 &nbsp;☑ /nav</text>
+      <rect x="695" y="258" width="80" height="22" rx="4" fill="#00a870"/>
+      <text x="735" y="273" font-family="Arial" font-size="10" fill="#fff" text-anchor="middle">Upload ▶</text>
+    </svg>
+  </div>
+</div>
+
+<!-- ── Screen 4: Code Views ──────────────────────────────────────────────── -->
+<h3>Screen 4 — Code Views (Files &amp; Changes / Diff Viewer)</h3>
+<p style="font-size:12px;color:#555;margin-bottom:12px">Switch to Code view to browse all repository files and review every AI-generated file change as a git diff before staging or pushing.</p>
+
+<div class="screen-frame">
+  <div class="screen-bar">
+    <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
+    <span class="url">aemcoder.adobe.io/chat — Code View: Changes</span>
+  </div>
+  <div class="screen-body">
+    <svg viewBox="0 0 900 420" xmlns="http://www.w3.org/2000/svg" style="display:block;width:100%">
+      <rect width="900" height="420" fill="#12121f"/>
+      <!-- Code view tab active -->
+      <rect x="0" y="0" width="900" height="38" fill="#1a1a2e"/>
+      <rect x="8" y="6" width="58" height="26" rx="4" fill="#252540"/>
+      <text x="37" y="23" font-family="Arial" font-size="10" fill="#888" text-anchor="middle">🔍 Preview</text>
+      <rect x="72" y="6" width="58" height="26" rx="4" fill="#6022a6"/>
+      <text x="101" y="23" font-family="Arial" font-size="10" fill="#fff" text-anchor="middle">⚙ Code</text>
+      <!-- Code sub-tabs -->
+      <rect x="0" y="38" width="900" height="32" fill="#16162a"/>
+      <rect x="10" y="44" width="56" height="20" rx="4" fill="#2a2040"/>
+      <text x="38" y="57" font-family="Arial" font-size="10" fill="#888" text-anchor="middle">📁 Files</text>
+      <rect x="72" y="44" width="70" height="20" rx="4" fill="#6022a6"/>
+      <text x="107" y="57" font-family="Arial" font-size="10" fill="#fff" text-anchor="middle">⊕ Changes (4)</text>
+      <!-- Changes toolbar -->
+      <text x="620" y="57" font-family="Arial" font-size="11" fill="#7766aa">⎇ Switch Branch</text>
+      <text x="720" y="57" font-family="Arial" font-size="11" fill="#7766aa">↙ Sync</text>
+      <rect x="756" y="44" width="60" height="22" rx="4" fill="#6022a6"/>
+      <text x="786" y="59" font-family="Arial" font-size="11" fill="#fff" text-anchor="middle">⬆ Push</text>
+      <text x="830" y="57" font-family="Arial" font-size="11" fill="#555">↻</text>
+      <!-- Left: changed files list -->
+      <rect x="0" y="70" width="220" height="350" fill="#16162a"/>
+      <text x="12" y="90" font-family="Arial" font-size="10" font-weight="bold" fill="#8877bb">CHANGED FILES</text>
+      <!-- File entry 1 — staged -->
+      <rect x="8" y="97" width="206" height="36" rx="4" fill="#1a2e1a"/>
+      <rect x="12" y="101" width="3" height="28" rx="1" fill="#00a870"/>
+      <text x="22" y="114" font-family="Arial" font-size="9.5" fill="#88ee88">+ styles/brand.css</text>
+      <text x="22" y="127" font-family="Arial" font-size="9" fill="#6666aa">staged · +142 lines</text>
+      <text x="194" y="114" font-family="Arial" font-size="10" fill="#888">+</text>
+      <text x="206" y="114" font-family="Arial" font-size="10" fill="#555">↺</text>
+      <!-- File entry 2 — staged -->
+      <rect x="8" y="138" width="206" height="36" rx="4" fill="#1a2e1a"/>
+      <rect x="12" y="142" width="3" height="28" rx="1" fill="#00a870"/>
+      <text x="22" y="155" font-family="Arial" font-size="9.5" fill="#88ee88">~ blocks/event-hero/event-hero.css</text>
+      <text x="22" y="168" font-family="Arial" font-size="9" fill="#6666aa">staged · +38 −12 lines</text>
+      <!-- File entry 3 — unstaged -->
+      <rect x="8" y="180" width="206" height="36" rx="4" fill="#2e1a1a"/>
+      <rect x="12" y="184" width="3" height="28" rx="1" fill="#e87722"/>
+      <text x="22" y="197" font-family="Arial" font-size="9.5" fill="#ffaa66">~ blocks/event-list/event-list.css</text>
+      <text x="22" y="210" font-family="Arial" font-size="9" fill="#6666aa">unstaged · +22 −4 lines</text>
+      <text x="194" y="197" font-family="Arial" font-size="10" fill="#888">+</text>
+      <text x="206" y="197" font-family="Arial" font-size="10" fill="#555">↺</text>
+      <!-- File entry 4 — unstaged -->
+      <rect x="8" y="222" width="206" height="36" rx="4" fill="#2e1a1a"/>
+      <rect x="12" y="226" width="3" height="28" rx="1" fill="#e87722"/>
+      <text x="22" y="239" font-family="Arial" font-size="9.5" fill="#ffaa66">+ styles/styles.css</text>
+      <text x="22" y="252" font-family="Arial" font-size="9" fill="#6666aa">unstaged · +88 lines</text>
+      <!-- Legend -->
+      <rect x="8" y="290" width="206" height="50" rx="4" fill="#1e1e38"/>
+      <text x="18" y="307" font-family="Arial" font-size="9" fill="#888">Legend:</text>
+      <rect x="18" y="314" width="6" height="6" rx="1" fill="#00a870"/>
+      <text x="28" y="322" font-family="Arial" font-size="9" fill="#88ee88">Staged (ready to push)</text>
+      <rect x="18" y="326" width="6" height="6" rx="1" fill="#e87722"/>
+      <text x="28" y="334" font-family="Arial" font-size="9" fill="#ffaa66">Unstaged (pending review)</text>
+      <!-- Right: diff view -->
+      <rect x="220" y="70" width="680" height="350" fill="#0d0d1a"/>
+      <!-- Diff header -->
+      <rect x="220" y="70" width="680" height="28" fill="#1e1e38"/>
+      <text x="232" y="88" font-family="Arial" font-size="10.5" font-weight="bold" fill="#c8b0e8">styles/brand.css &nbsp;—&nbsp;</text>
+      <text x="352" y="88" font-family="Arial" font-size="10" fill="#88ee88">+142 lines added</text>
+      <rect x="810" y="76" width="78" height="18" rx="4" fill="#2a2040"/>
+      <text x="849" y="89" font-family="Arial" font-size="9.5" fill="#888" text-anchor="middle">📎 Add to chat</text>
+      <text x="895" y="89" font-family="Arial" font-size="9.5" fill="#888">⬇</text>
+      <!-- Diff lines -->
+      <rect x="220" y="98" width="680" height="14" fill="#0a1a0a"/>
+      <text x="232" y="109" font-family="Consolas,monospace" font-size="9.5" fill="#00aa44">+ /* ── GE HealthCare Brand Tokens — extracted from events.gehealthcare.com */</text>
+      <rect x="220" y="112" width="680" height="14" fill="#0a1a0a"/>
+      <text x="232" y="123" font-family="Consolas,monospace" font-size="9.5" fill="#00aa44">+ :root {</text>
+      <rect x="220" y="126" width="680" height="14" fill="#0a1a0a"/>
+      <text x="232" y="137" font-family="Consolas,monospace" font-size="9.5" fill="#00aa44">+   --brand-purple: #6022a6;</text>
+      <rect x="220" y="140" width="680" height="14" fill="#0a1a0a"/>
+      <text x="232" y="151" font-family="Consolas,monospace" font-size="9.5" fill="#00aa44">+   --brand-purple-dark: #3a0d70;</text>
+      <rect x="220" y="154" width="680" height="14" fill="#0a1a0a"/>
+      <text x="232" y="165" font-family="Consolas,monospace" font-size="9.5" fill="#00aa44">+   --color-white: #ffffff;</text>
+      <rect x="220" y="168" width="680" height="14" fill="#1a0a0a"/>
+      <text x="232" y="179" font-family="Consolas,monospace" font-size="9.5" fill="#ee4444">-   --body-font-size-m: 16px; /* old value */</text>
+      <rect x="220" y="182" width="680" height="14" fill="#0a1a0a"/>
+      <text x="232" y="193" font-family="Consolas,monospace" font-size="9.5" fill="#00aa44">+   --body-font-size-m: 18px; /* updated from source */</text>
+      <rect x="220" y="196" width="680" height="14" fill="#0d0d1a"/>
+      <text x="232" y="207" font-family="Consolas,monospace" font-size="9.5" fill="#888">    --heading-font-family: 'GE Inspira Sans', sans-serif;</text>
+      <rect x="220" y="210" width="680" height="14" fill="#0d0d1a"/>
+      <text x="232" y="221" font-family="Consolas,monospace" font-size="9.5" fill="#888">    --body-font-family: 'GE Inspira Sans', sans-serif;</text>
+      <rect x="220" y="224" width="680" height="14" fill="#0a1a0a"/>
+      <text x="232" y="235" font-family="Consolas,monospace" font-size="9.5" fill="#00aa44">+   --link-color: #6022a6;</text>
+      <rect x="220" y="238" width="680" height="14" fill="#0a1a0a"/>
+      <text x="232" y="249" font-family="Consolas,monospace" font-size="9.5" fill="#00aa44">+   --button-border-radius: 4px;</text>
+      <!-- Push modal callout annotation -->
+      <line x1="786" y1="44" x2="820" y2="50" stroke="#ff9900" stroke-width="1" stroke-dasharray="3,2"/>
+    </svg>
+  </div>
+</div>
+<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin:10px 0 22px;font-size:11.5px">
+  <div class="ib tip" style="margin:0"><strong>+ (Add):</strong> Stage a changed file for the next push</div>
+  <div class="ib warn" style="margin:0"><strong>↺ (Discard):</strong> Revert an unstaged file to its last committed state</div>
+  <div class="ib danger" style="margin:0"><strong>Green = staged · Orange = unstaged</strong>. Only staged files are included in the push.</div>
+</div>
+
+<!-- ── Screen 5: Settings Page ──────────────────────────────────────────── -->
+<h3>Screen 5 — Settings Page</h3>
+<p style="font-size:12px;color:#555;margin-bottom:12px">Access Settings from the home page or chat panel header. Save each section independently. The back icon returns to your previous view.</p>
+
+<div class="screen-frame">
+  <div class="screen-bar">
+    <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
+    <span class="url">aemcoder.adobe.io/settings</span>
+  </div>
+  <div class="screen-body">
+    <svg viewBox="0 0 900 480" xmlns="http://www.w3.org/2000/svg" style="display:block;width:100%">
+      <rect width="900" height="480" fill="#12121f"/>
+      <!-- Top nav -->
+      <rect width="900" height="40" fill="#1a1a30"/>
+      <text x="18" y="25" font-family="Arial" font-size="12" font-weight="bold" fill="#c8b0e8">⬡ Adobe Experience Manager</text>
+      <!-- Settings header -->
+      <rect x="0" y="40" width="900" height="44" fill="#1e1e38"/>
+      <text x="24" y="67" font-family="Arial" font-size="14" font-weight="bold" fill="#fff">← Settings</text>
+      <!-- Settings sections — 2 column grid -->
+      <!-- Col 1 -->
+      <!-- Section: Project -->
+      <rect x="20" y="98" width="420" height="150" rx="8" fill="#1e1e38" stroke="#3a2060" stroke-width="1"/>
+      <text x="36" y="120" font-family="Arial" font-size="12" font-weight="bold" fill="#c8b0e8">Project</text>
+      <text x="36" y="138" font-family="Arial" font-size="10" fill="#888">GitHub Repository</text>
+      <rect x="36" y="144" width="280" height="20" rx="3" fill="#2a2040"/>
+      <text x="44" y="158" font-family="Arial" font-size="10" fill="#aaa">bhasakatech/eds-events-gehealthcare</text>
+      <rect x="322" y="144" width="100" height="20" rx="3" fill="#6022a6"/>
+      <text x="372" y="158" font-family="Arial" font-size="10" fill="#fff" text-anchor="middle">Reconnect ↻</text>
+      <text x="36" y="182" font-family="Arial" font-size="10" fill="#888">Library URL</text>
+      <rect x="36" y="188" width="380" height="20" rx="3" fill="#2a2040"/>
+      <text x="44" y="202" font-family="Arial" font-size="10" fill="#555">https://…/library.json</text>
+      <text x="36" y="220" font-family="Arial" font-size="10" fill="#888">Site Base URL</text>
+      <rect x="36" y="226" width="380" height="20" rx="3" fill="#2a2040"/>
+      <text x="44" y="240" font-family="Arial" font-size="10" fill="#555">https://events.gehealthcare.com</text>
+      <rect x="358" y="100" width="70" height="20" rx="3" fill="#00a870"/>
+      <text x="393" y="114" font-family="Arial" font-size="9.5" fill="#fff" text-anchor="middle">Save</text>
+      <!-- Section: Agent Permissions -->
+      <rect x="20" y="262" width="420" height="110" rx="8" fill="#1e1e38" stroke="#3a2060" stroke-width="1"/>
+      <text x="36" y="284" font-family="Arial" font-size="12" font-weight="bold" fill="#c8b0e8">Agent Permissions</text>
+      <rect x="36" y="294" width="16" height="16" rx="3" fill="#6022a6"/>
+      <text x="54" y="306" font-family="Arial" font-size="10" fill="#c8b0e8"> ✓ Allow LLM to access admin.hlx.page on my behalf</text>
+      <text x="36" y="322" font-family="Arial" font-size="9.5" fill="#6666aa">When enabled, the AI can fetch site config and metadata using your IMS credentials.</text>
+      <text x="36" y="340" font-family="Arial" font-size="10" fill="#888">Custom IMS Token</text>
+      <rect x="36" y="346" width="380" height="20" rx="3" fill="#2a2040"/>
+      <text x="44" y="360" font-family="Arial" font-size="10" fill="#555">Leave blank to use session token</text>
+      <rect x="358" y="264" width="70" height="20" rx="3" fill="#00a870"/>
+      <text x="393" y="278" font-family="Arial" font-size="9.5" fill="#fff" text-anchor="middle">Save</text>
+      <!-- Col 2 -->
+      <!-- Section: Credentials (Figma) -->
+      <rect x="460" y="98" width="420" height="150" rx="8" fill="#1e1e38" stroke="#3a2060" stroke-width="1"/>
+      <text x="476" y="120" font-family="Arial" font-size="12" font-weight="bold" fill="#c8b0e8">Credentials (Figma)</text>
+      <text x="476" y="138" font-family="Arial" font-size="10" fill="#888">Personal Access Token</text>
+      <rect x="476" y="144" width="300" height="20" rx="3" fill="#2a2040"/>
+      <text x="484" y="158" font-family="Arial" font-size="10" fill="#555">figd_••••••••••••••••••••</text>
+      <text x="476" y="180" font-family="Arial" font-size="10" font-weight="bold" fill="#888">Required read-only scopes:</text>
+      <text x="476" y="196" font-family="Arial" font-size="9.5" fill="#7766aa">file_content:read · file_metadata:read</text>
+      <text x="476" y="210" font-family="Arial" font-size="9.5" fill="#7766aa">library_assets:read · library_content:read</text>
+      <text x="476" y="224" font-family="Arial" font-size="9.5" fill="#7766aa">team_library_content:read · file_dev_resources:read · projects:read</text>
+      <rect x="798" y="100" width="70" height="20" rx="3" fill="#00a870"/>
+      <text x="833" y="114" font-family="Arial" font-size="9.5" fill="#fff" text-anchor="middle">Save</text>
+      <!-- Section: Support -->
+      <rect x="460" y="262" width="420" height="70" rx="8" fill="#1e1e38" stroke="#3a2060" stroke-width="1"/>
+      <text x="476" y="284" font-family="Arial" font-size="12" font-weight="bold" fill="#c8b0e8">Support</text>
+      <text x="476" y="302" font-family="Arial" font-size="10" fill="#888">Report issues directly to the Adobe support team without leaving the console.</text>
+      <rect x="620" y="312" width="120" height="22" rx="4" fill="#0070f3"/>
+      <text x="680" y="327" font-family="Arial" font-size="10" fill="#fff" text-anchor="middle">Request Support →</text>
+      <!-- Section: Danger Zone -->
+      <rect x="460" y="348" width="420" height="80" rx="8" fill="#1e1e38" stroke="#d7373f" stroke-width="1.5"/>
+      <text x="476" y="370" font-family="Arial" font-size="12" font-weight="bold" fill="#ee4444">⚠ Danger Zone</text>
+      <text x="476" y="388" font-family="Arial" font-size="10" fill="#cc8888">Reset workspace — reverts to initial state. This cannot be undone.</text>
+      <text x="476" y="402" font-family="Arial" font-size="9.5" fill="#aa4444">Ensure all changes are staged and pushed to GitHub before using this.</text>
+      <rect x="714" y="358" width="140" height="26" rx="4" fill="none" stroke="#d7373f" stroke-width="1.5"/>
+      <text x="784" y="375" font-family="Arial" font-size="10.5" fill="#d7373f" text-anchor="middle">Reset workspace</text>
+      <!-- Annotation lines -->
+      <line x1="20" y1="262" x2="4" y2="300" stroke="#ff9900" stroke-width="1" stroke-dasharray="3,2"/>
+      <rect x="0" y="292" width="4" height="70" rx="1" fill="#ff9900"/>
+      <!-- Switch repo annotation -->
+      <text x="322" y="134" font-family="Arial" font-size="9" fill="#9966cc">Also: Switch Repo · Logout</text>
+    </svg>
+  </div>
+</div>
+<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin:10px 0 22px;font-size:11.5px">
+  <div class="ib note" style="margin:0"><strong>Project:</strong> Connect/Reconnect GitHub, switch repo, set Library URL and Site Base URL.</div>
+  <div class="ib tip" style="margin:0"><strong>Agent Permissions:</strong> Must enable "Allow LLM to access admin.hlx.page" for project documentation and content upload.</div>
+  <div class="ib danger" style="margin:0"><strong>Danger Zone:</strong> Reset workspace is irreversible. Push all work to GitHub first.</div>
+</div>
+
+<!-- ── Screen 6: Push Modal ──────────────────────────────────────────────── -->
+<h3>Screen 6 — Push Modal / PR Creation</h3>
+<p style="font-size:12px;color:#555;margin-bottom:12px">After staging changes, click <strong>Push</strong> in the Changes toolbar. The modal lets you push directly to the current branch or open a new Pull Request.</p>
+
+<div class="screen-frame">
+  <div class="screen-bar">
+    <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
+    <span class="url">aemcoder.adobe.io — Push Changes Modal</span>
+  </div>
+  <div class="screen-body">
+    <svg viewBox="0 0 900 340" xmlns="http://www.w3.org/2000/svg" style="display:block;width:100%">
+      <rect width="900" height="340" fill="#12121f" opacity="0.6"/>
+      <!-- Modal overlay -->
+      <rect x="200" y="24" width="500" height="290" rx="10" fill="#1e1e38" stroke="#4a3080" stroke-width="1.5"/>
+      <!-- Modal header -->
+      <rect x="200" y="24" width="500" height="44" rx="10" fill="#3a0d70"/>
+      <rect x="200" y="54" width="500" height="14" fill="#3a0d70"/>
+      <text x="450" y="51" font-family="Arial" font-size="14" font-weight="bold" fill="#fff" text-anchor="middle">⬆ Push Changes to GitHub</text>
+      <text x="688" y="51" font-family="Arial" font-size="16" fill="#aaa" text-anchor="middle">×</text>
+      <!-- Staged files summary -->
+      <text x="220" y="90" font-family="Arial" font-size="11" font-weight="bold" fill="#c8b0e8">Staged files (2)</text>
+      <rect x="220" y="96" width="460" height="18" rx="3" fill="#1a2e1a"/>
+      <text x="228" y="109" font-family="Consolas,monospace" font-size="9.5" fill="#88ee88">+ styles/brand.css (+142)&nbsp;&nbsp;&nbsp;&nbsp;~ blocks/event-hero/event-hero.css (+38 −12)</text>
+      <!-- Branch option -->
+      <text x="220" y="132" font-family="Arial" font-size="11" font-weight="bold" fill="#c8b0e8">Push to</text>
+      <rect x="220" y="138" width="220" height="30" rx="5" fill="#2a2040" stroke="#6022a6" stroke-width="1.5"/>
+      <circle cx="236" cy="153" r="6" fill="none" stroke="#6022a6" stroke-width="2"/>
+      <circle cx="236" cy="153" r="3" fill="#6022a6"/>
+      <text x="248" y="157" font-family="Arial" font-size="11" fill="#c8b0e8">Current branch (main)</text>
+      <rect x="460" y="138" width="220" height="30" rx="5" fill="#2a2040" stroke="#4a3080" stroke-width="1"/>
+      <circle cx="476" cy="153" r="6" fill="none" stroke="#888" stroke-width="2"/>
+      <text x="488" y="157" font-family="Arial" font-size="11" fill="#888">New branch + Create PR</text>
+      <!-- PR fields (faded since not selected) -->
+      <text x="220" y="186" font-family="Arial" font-size="11" fill="#666688">Branch name</text>
+      <rect x="220" y="192" width="460" height="24" rx="4" fill="#1e1e30" stroke="#3a2040" stroke-width="1"/>
+      <text x="232" y="208" font-family="Arial" font-size="10" fill="#444">feature/design-migration-gehealthcare</text>
+      <text x="220" y="228" font-family="Arial" font-size="11" fill="#666688">Commit message</text>
+      <rect x="220" y="234" width="460" height="24" rx="4" fill="#1e1e30" stroke="#3a2040" stroke-width="1"/>
+      <text x="232" y="250" font-family="Arial" font-size="10" fill="#444">feat: migrate design tokens from events.gehealthcare.com</text>
+      <!-- Push button -->
+      <rect x="340" y="272" width="220" height="32" rx="6" fill="#6022a6"/>
+      <text x="450" y="292" font-family="Arial" font-size="13" font-weight="bold" fill="#fff" text-anchor="middle">Push to GitHub →</text>
+      <!-- Success notification (bottom of screen) -->
+      <rect x="220" y="316" width="460" height="0" rx="6" fill="#1a2e1a"/>
+      <!-- Annotation outside modal -->
+      <text x="48" y="100" font-family="Arial" font-size="10" fill="#888" text-anchor="middle">After push:</text>
+      <rect x="6" y="108" width="130" height="80" rx="6" fill="#1a2e1a" stroke="#00a870" stroke-width="1"/>
+      <text x="71" y="126" font-family="Arial" font-size="9.5" fill="#88ee88" text-anchor="middle">✓ Push complete</text>
+      <text x="71" y="142" font-family="Arial" font-size="9" fill="#aaa" text-anchor="middle">PR opened:</text>
+      <text x="71" y="156" font-family="Arial" font-size="9" fill="#66aaff" text-anchor="middle">github.com/bhasakatech/</text>
+      <text x="71" y="168" font-family="Arial" font-size="9" fill="#66aaff" text-anchor="middle">eds-events-gehealth…</text>
+      <text x="71" y="182" font-family="Arial" font-size="9" fill="#6022a6" text-anchor="middle">View PR →</text>
+      <!-- Right annotation: PR checks -->
+      <rect x="738" y="80" width="155" height="120" rx="6" fill="#1e1e38" stroke="#3a2060" stroke-width="1"/>
+      <text x="815" y="100" font-family="Arial" font-size="10" font-weight="bold" fill="#c8b0e8" text-anchor="middle">GitHub PR Checks</text>
+      <text x="748" y="118" font-family="Arial" font-size="9.5" fill="#88ee88">✓ AEM Code Sync</text>
+      <text x="748" y="133" font-family="Arial" font-size="9.5" fill="#88ee88">✓ ESLint (Airbnb)</text>
+      <text x="748" y="148" font-family="Arial" font-size="9.5" fill="#88ee88">✓ Stylelint</text>
+      <text x="748" y="163" font-family="Arial" font-size="9.5" fill="#ffcc44">⏳ PSI Score Check</text>
+      <text x="748" y="178" font-family="Arial" font-size="9.5" fill="#888">Target: 100 / 100</text>
+      <text x="748" y="193" font-family="Arial" font-size="9.5" fill="#888">👤 Awaiting human review</text>
+      <line x1="700" y1="150" x2="737" y2="150" stroke="#4a3080" stroke-width="1" stroke-dasharray="3,2"/>
+    </svg>
+  </div>
+</div>
+<div class="ib warn"><strong>Before pushing:</strong> Only staged files are included. Ensure <code>npm run lint</code> passes locally. The PR description must include a preview URL: <code>https://{branch}--eds-events-gehealthcare--bhasakatech.aem.page/{path}</code></div>
+
+<!-- ═══ SECTION 3 — CHALLENGES ══════════════════════════════════════════════ -->
+<div class="sec">
+  <div class="sec-num">03</div>
+  <div class="sec-title">Challenges &amp; How to Resolve Them<small>24 known challenges across 5 categories</small></div>
+</div>
+
+<h3>2.1 &nbsp;Access &amp; Setup Challenges</h3>
+<div class="ch">
+  <div class="ch-head"><span class="ch-id">C1</span><span class="ch-title">Access is gated — console not freely available</span></div>
+  <div class="ch-body">
+    <div class="ch-col"><div class="ch-lbl cause">Root Cause</div><p>Early-access program with managed onboarding. Requires Adobe account manager approval before any use.</p></div>
+    <div class="ch-col"><div class="ch-lbl fix">Resolution</div><p>Contact your Adobe account manager to request access. Work at <code>aemcoder.adobe.io</code> cannot begin until approved. Access is tied to your Adobe ID.</p></div>
+  </div>
+</div>
+<div class="ch">
+  <div class="ch-head"><span class="ch-id">C2</span><span class="ch-title">Console cannot inspect code — GitHub app missing</span></div>
+  <div class="ch-body">
+    <div class="ch-col"><div class="ch-lbl cause">Root Cause</div><p>AEM Code Connector GitHub app not installed on the repository. Without it the console has no code access.</p></div>
+    <div class="ch-col"><div class="ch-lbl fix">Resolution</div><p>Install the <strong>AEM Code Connector</strong> GitHub app on <code>bhasakatech/eds-events-gehealthcare</code>. Navigate to: GitHub repo → Settings → Integrations → GitHub Apps.</p></div>
+  </div>
+</div>
+<div class="ch">
+  <div class="ch-head"><span class="ch-id">C3</span><span class="ch-title">Code sync not working after push</span></div>
+  <div class="ch-body">
+    <div class="ch-col"><div class="ch-lbl cause">Root Cause</div><p>AEM Code Sync GitHub app not installed. This app is what syncs pushed code to the EDS CDN.</p></div>
+    <div class="ch-col"><div class="ch-lbl fix">Resolution</div><p>This project (boilerplate-based) likely already has AEM Code Sync installed. Verify at GitHub → Settings → Integrations. If missing, install from <code>github.com/apps/hlx-code-sync</code>.</p></div>
+  </div>
+</div>
+<div class="ch">
+  <div class="ch-head"><span class="ch-id">C4</span><span class="ch-title">Cannot create PRs — token has no write access</span></div>
+  <div class="ch-body">
+    <div class="ch-col"><div class="ch-lbl cause">Root Cause</div><p>GitHub personal access token in Adobe Cloud Manager was created read-only. The console needs write access to push branches and open PRs.</p></div>
+    <div class="ch-col"><div class="ch-lbl fix">Resolution</div><p>Cloud Manager → Repositories → Manage Access Tokens → edit the token → add write access to repository code. Cloud Manager re-validates the repository automatically.</p></div>
+  </div>
+</div>
+<div class="ch">
+  <div class="ch-head"><span class="ch-id">C5</span><span class="ch-title">fstab.yaml mismatch — console connection fails</span></div>
+  <div class="ch-body">
+    <div class="ch-col"><div class="ch-lbl cause">Root Cause</div><p>Site name or host in <code>fstab.yaml</code> is wrong, or file is not committed to <code>main</code> before connecting the console.</p></div>
+    <div class="ch-col"><div class="ch-lbl fix">Resolution</div><p>This project: <code>fstab.yaml</code> already points to <code>author-p139816-e1765605.adobeaemcloud.com</code> with org <code>bhasakatech</code>. Verify values and ensure committed to <code>main</code>.</p></div>
+  </div>
+</div>
+
+<h3>2.2 &nbsp;Content Migration Challenges</h3>
+<div class="ch">
+  <div class="ch-head"><span class="ch-id">C6</span><span class="ch-title">Protected / intranet content not scraped</span></div>
+  <div class="ch-body">
+    <div class="ch-col"><div class="ch-lbl cause">Root Cause</div><p>Content behind authentication, VPN, or a firewall is not accessible to the agent's headless Chromium scraper.</p></div>
+    <div class="ch-col"><div class="ch-lbl fix">Resolution</div><p>Use <strong>SLICC</strong> (browser-context scraping) to access protected content. Or allow-list agent IPs in your firewall: <code>34.228.136.112</code> · <code>54.90.51.39</code> · <code>3.224.194.242</code></p></div>
+  </div>
+</div>
+<div class="ch">
+  <div class="ch-head"><span class="ch-id">C7</span><span class="ch-title">Complex dynamic content not captured</span></div>
+  <div class="ch-body">
+    <div class="ch-col"><div class="ch-lbl cause">Root Cause</div><p>JavaScript-heavy SPAs or content requiring user interaction (click, scroll, hover) to appear in the DOM.</p></div>
+    <div class="ch-col"><div class="ch-lbl fix">Resolution</div><p>Client-side rendered content accessible via a direct URL is supported. CSS-hidden content (tabs, accordions, carousels) is captured as it exists in the DOM. Server-driven dynamic data requires separate custom block development.</p></div>
+  </div>
+</div>
+<div class="ch">
+  <div class="ch-head"><span class="ch-id">C8</span><span class="ch-title">Bulk import fails — no infrastructure found</span></div>
+  <div class="ch-body">
+    <div class="ch-col"><div class="ch-lbl cause">Root Cause</div><p>Single-page migration was skipped. Bulk import requires parsers, transformers, and page templates created during initial single-page migration.</p></div>
+    <div class="ch-col"><div class="ch-lbl fix">Resolution</div><p>Always migrate at least one representative page per template before running bulk import. This is mandatory — bulk import reuses the infrastructure, it does not infer templates from scratch.</p></div>
+  </div>
+</div>
+<div class="ch">
+  <div class="ch-head"><span class="ch-id">C9</span><span class="ch-title">Block CSS does not match source design</span></div>
+  <div class="ch-body">
+    <div class="ch-col"><div class="ch-lbl cause">Root Cause</div><p>Design tokens (Phase 1) not extracted before individual block styling (Phase 2). Block CSS references <code>brand.css</code> variables that don't exist yet.</p></div>
+    <div class="ch-col"><div class="ch-lbl fix">Resolution</div><p>Complete Phase 1 of design migration first: <em>"Migrate the design from https://events.gehealthcare.com"</em>. This generates <code>styles/brand.css</code> with all tokens before any block CSS is written.</p></div>
+  </div>
+</div>
+<div class="ch">
+  <div class="ch-head"><span class="ch-id">C10</span><span class="ch-title">Navigation links render as buttons</span></div>
+  <div class="ch-body">
+    <div class="ch-col"><div class="ch-lbl cause">Root Cause</div><p>Document Authoring automatically wraps links in button classes, affecting navigation link items visually.</p></div>
+    <div class="ch-col"><div class="ch-lbl fix">Resolution</div><p><code>header.js</code> must strip button classes from nav links. The agent's Navigation Setup skill handles this automatically. Prompt: <em>"Set up navigation from https://events.gehealthcare.com"</em></p></div>
+  </div>
+</div>
+<div class="ch">
+  <div class="ch-head"><span class="ch-id">C11</span><span class="ch-title">Dynamic Media / Scene7 image URLs broken after import</span></div>
+  <div class="ch-body">
+    <div class="ch-col"><div class="ch-lbl cause">Root Cause</div><p>Images re-imported as static renditions instead of preserving DM URLs, losing responsive and on-the-fly image transformations.</p></div>
+    <div class="ch-col"><div class="ch-lbl fix">Resolution</div><p>The agent automatically detects DM/Scene7 sources and preserves them as DM URLs during migration. No manual intervention required — handled transparently for both DA and UE migrations.</p></div>
+  </div>
+</div>
+
+<h3>2.3 &nbsp;AI Context &amp; Prompt Challenges</h3>
+<div class="ch">
+  <div class="ch-head"><span class="ch-id">C12</span><span class="ch-title">Agent loses context mid-conversation</span></div>
+  <div class="ch-body">
+    <div class="ch-col"><div class="ch-lbl cause">Root Cause</div><p>AI context window is finite. Long sessions compact or forget earlier instructions, especially project-specific rules and naming conventions.</p></div>
+    <div class="ch-col"><div class="ch-lbl fix">Resolution</div><p>(a) Add <code>INSTRUCTIONS.md</code> or <code>CONTEXT.md</code> to repo root with brand guidelines and block rules. (b) Start every new session: <em>"Warm up by reading the project documentation"</em>. (c) If lost, clear chat and restart with warm-up.</p></div>
+  </div>
+</div>
+<div class="ch">
+  <div class="ch-head"><span class="ch-id">C13</span><span class="ch-title">Agent makes wrong block mappings</span></div>
+  <div class="ch-body">
+    <div class="ch-col"><div class="ch-lbl cause">Root Cause</div><p>Ambiguous source HTML structure or missing project context. Agent defaults to generic patterns when project-specific guidance is absent.</p></div>
+    <div class="ch-col"><div class="ch-lbl fix">Resolution</div><p>Use iterative prompting — let the agent ask clarifying questions and answer them one at a time. Do not front-load all requirements in the first prompt. Refine mappings interactively after each migration step.</p></div>
+  </div>
+</div>
+<div class="ch">
+  <div class="ch-head"><span class="ch-id">C14</span><span class="ch-title">Block critique never reaches 85% similarity</span></div>
+  <div class="ch-body">
+    <div class="ch-col"><div class="ch-lbl cause">Root Cause</div><p>Source and migrated content differ structurally. Critique runs a maximum of 3 auto-fix iterations and stops regardless of score reached.</p></div>
+    <div class="ch-col"><div class="ch-lbl fix">Resolution</div><p>After 3 iterations, manually review the diff viewer in Code view. Apply targeted CSS or structural fixes via specific follow-up prompts using Inspect mode to select the exact element needing correction.</p></div>
+  </div>
+</div>
+<div class="ch">
+  <div class="ch-head"><span class="ch-id">C15</span><span class="ch-title">AI generates inaccurate or misleading responses</span></div>
+  <div class="ch-body">
+    <div class="ch-col"><div class="ch-lbl cause">Root Cause</div><p>General LLM limitation — the model can hallucinate, misinterpret source HTML, or suggest non-optimal patterns.</p></div>
+    <div class="ch-col"><div class="ch-lbl fix">Resolution</div><p>Always review AI-generated code in the diff viewer before staging. Never push without human review. The GitHub PR review step is the final governance gate before any change reaches production.</p></div>
+  </div>
+</div>
+
+<h3>2.4 &nbsp;AEM Authoring / Universal Editor Challenges</h3>
+<div class="ch">
+  <div class="ch-head"><span class="ch-id">C16</span><span class="ch-title">Wrong boilerplate used for AEM Authoring project</span></div>
+  <div class="ch-body">
+    <div class="ch-col"><div class="ch-lbl cause">Root Cause</div><p>Standard EDS boilerplate used instead of the xwalk-specific boilerplate required for Universal Editor projects.</p></div>
+    <div class="ch-col"><div class="ch-lbl fix">Resolution</div><p>Use <code>aem-block-collection-xwalk</code> as the template. This project already uses <code>aem-boilerplate-xwalk</code> — <strong style="color:#00a870">correct</strong>. No action needed.</p></div>
+  </div>
+</div>
+<div class="ch">
+  <div class="ch-head"><span class="ch-id">C17</span><span class="ch-title">paths.json causes errors in AEM authoring flow</span></div>
+  <div class="ch-body">
+    <div class="ch-col"><div class="ch-lbl cause">Root Cause</div><p><code>paths.json</code> at the repo root conflicts with the AEM authoring setup when connecting the console to a Universal Editor project.</p></div>
+    <div class="ch-col"><div class="ch-lbl fix">Resolution</div><p>Delete <code>paths.json</code> from the repo root and commit the deletion to <code>main</code> before connecting the console. This is a <strong style="color:#d7373f">required step</strong> for AEM Authoring projects.</p></div>
+  </div>
+</div>
+<div class="ch">
+  <div class="ch-head"><span class="ch-id">C18</span><span class="ch-title">Content upload package fails</span></div>
+  <div class="ch-body">
+    <div class="ch-col"><div class="ch-lbl cause">Root Cause</div><p>Admin permissions or Agent Permissions not enabled in the console settings. The agent cannot access the AEM admin API without explicit authorization.</p></div>
+    <div class="ch-col"><div class="ch-lbl fix">Resolution</div><p>Settings → Agent Permissions → enable: <em>"Allow LLM to access admin.hlx.page on my behalf"</em>. Also verify you have admin access to the AEM project in Cloud Manager.</p></div>
+  </div>
+</div>
+<div class="ch">
+  <div class="ch-head"><span class="ch-id">C19</span><span class="ch-title">Content not visible in AEM after upload</span></div>
+  <div class="ch-body">
+    <div class="ch-col"><div class="ch-lbl cause">Root Cause</div><p>Preview was not triggered after content was uploaded to AEM. Content exists in the repository but has not been published to the AEM preview environment.</p></div>
+    <div class="ch-col"><div class="ch-lbl fix">Resolution</div><p>Go to Document Authoring (<code>da.live/#/bhasakatech/eds-events-gehealthcare</code>), open the uploaded page, click the paper plane icon (top-right), then select <strong>Preview</strong>.</p></div>
+  </div>
+</div>
+
+<h3>2.5 &nbsp;Code Quality &amp; Deployment Challenges</h3>
+<div class="ch">
+  <div class="ch-head"><span class="ch-id">C20</span><span class="ch-title">Linting fails after agent writes code</span></div>
+  <div class="ch-body">
+    <div class="ch-col"><div class="ch-lbl cause">Root Cause</div><p>AI-generated JavaScript or CSS may not fully comply with the project's ESLint (Airbnb rules) or Stylelint (standard) configuration.</p></div>
+    <div class="ch-col"><div class="ch-lbl fix">Resolution</div><p>Run <code>npm run lint:fix</code> after any agent-generated changes before staging. The Push modal triggers GitHub PR checks that include linting — failures block the merge.</p></div>
+  </div>
+</div>
+<div class="ch">
+  <div class="ch-head"><span class="ch-id">C21</span><span class="ch-title">Changes not appearing in preview after push</span></div>
+  <div class="ch-body">
+    <div class="ch-col"><div class="ch-lbl cause">Root Cause</div><p>AEM Code Sync has a 3–5 second processing delay after a push before changes are live on the preview CDN.</p></div>
+    <div class="ch-col"><div class="ch-lbl fix">Resolution</div><p>Wait 3–5 seconds after the push completes, then hard-refresh the preview tab with <strong>Ctrl+Shift+R</strong>. The console's Refresh icon also re-fetches the preview rendering.</p></div>
+  </div>
+</div>
+<div class="ch">
+  <div class="ch-head"><span class="ch-id">C22</span><span class="ch-title">Images showing "about:error" in preview</span></div>
+  <div class="ch-body">
+    <div class="ch-col"><div class="ch-lbl cause">Root Cause</div><p><code>createOptimizedPicture</code> not called in block JS, or called before the final DOM structure has been assembled by the decorator.</p></div>
+    <div class="ch-col"><div class="ch-lbl fix">Resolution</div><p>Call <code>createOptimizedPicture</code> only after the final DOM restructuring is complete. Prompt the debugging skill: <em>"Debug why images show about:error in the event-hero block"</em>.</p></div>
+  </div>
+</div>
+<div class="ch">
+  <div class="ch-head"><span class="ch-id">C23</span><span class="ch-title">PageSpeed Insights score drops after migration</span></div>
+  <div class="ch-body">
+    <div class="ch-col"><div class="ch-lbl cause">Root Cause</div><p>Unoptimized assets committed to git, or heavy JS/CSS loaded eagerly. Author-uploaded images are auto-optimized by EDS; git-committed images are not.</p></div>
+    <div class="ch-col"><div class="ch-lbl fix">Resolution</div><p>Optimize all assets before committing to git. Use <code>lazy-styles.css</code> for non-critical CSS and <code>delayed.js</code> for MarTech. Run PSI against the feature preview URL — target score: 100.</p></div>
+  </div>
+</div>
+<div class="ch">
+  <div class="ch-head"><span class="ch-id">C24</span><span class="ch-title">Workspace reset loses all uncommitted work</span></div>
+  <div class="ch-body">
+    <div class="ch-col"><div class="ch-lbl cause">Root Cause</div><p>"Reset workspace" in the Settings → Danger Zone was triggered. This action is permanent and irreversible — the workspace returns to its initial state.</p></div>
+    <div class="ch-col"><div class="ch-lbl fix">Resolution</div><p>Always stage and push all changes to GitHub before touching the Danger Zone. Treat it like dropping a database — never click it with any unstaged work in the workspace.</p></div>
+  </div>
+</div>
+
+<!-- ═══ SECTION 4 — USAGE MODES ═════════════════════════════════════════════ -->
+<div class="sec">
+  <div class="sec-num">04</div>
+  <div class="sec-title">How Many Ways to Use This Tool<small>6 distinct usage modes — fully automated to fully manual</small></div>
+</div>
+
+<div class="screen-frame" style="margin-bottom:22px">
+  <div class="screen-bar">
+    <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
+    <span class="url">aemcoder.adobe.io — Prompt Input Controls</span>
+  </div>
+  <div class="screen-body">
+    <svg viewBox="0 0 900 160" xmlns="http://www.w3.org/2000/svg" style="display:block;width:100%">
+      <rect width="900" height="160" fill="#12121f"/>
+      <!-- Prompt box -->
+      <rect x="40" y="20" width="820" height="56" rx="8" fill="#1e1e3a" stroke="#4a3080" stroke-width="1.5"/>
+      <text x="64" y="52" font-family="Arial" font-size="12" fill="#555577">Ask me to migrate a page, critique a block, develop a component, debug an issue…</text>
+      <!-- Plan / Execute icons -->
+      <rect x="730" y="28" width="36" height="36" rx="6" fill="#6022a6"/>
+      <text x="748" y="51" font-family="Arial" font-size="16" fill="#fff" text-anchor="middle">💡</text>
+      <rect x="772" y="28" width="36" height="36" rx="6" fill="#2a2a4a" stroke="#4a3080" stroke-width="1"/>
+      <text x="790" y="51" font-family="Arial" font-size="16" fill="#888" text-anchor="middle">🪄</text>
+      <!-- Queue + Attach icons -->
+      <rect x="814" y="28" width="36" height="36" rx="6" fill="#2a2a4a" stroke="#4a3080" stroke-width="1"/>
+      <text x="832" y="51" font-family="Arial" font-size="16" fill="#888" text-anchor="middle">⏱</text>
+      <rect x="855" y="28" width="20" height="36" rx="4" fill="#2a2a4a" stroke="#4a3080" stroke-width="1"/>
+      <text x="865" y="51" font-family="Arial" font-size="14" fill="#888" text-anchor="middle">📎</text>
+      <!-- Labels -->
+      <text x="748" y="84" font-family="Arial" font-size="9.5" fill="#9966cc" text-anchor="middle">Plan Mode</text>
+      <text x="790" y="84" font-family="Arial" font-size="9.5" fill="#888" text-anchor="middle">Execute Mode</text>
+      <text x="832" y="84" font-family="Arial" font-size="9.5" fill="#888" text-anchor="middle">Queue</text>
+      <text x="865" y="84" font-family="Arial" font-size="9.5" fill="#888" text-anchor="middle">Files</text>
+      <!-- Mode 4, 5, 6 icons in workspace -->
+      <rect x="40" y="100" width="110" height="44" rx="6" fill="#1e1e38" stroke="#3a2060" stroke-width="1"/>
+      <text x="95" y="118" font-family="Arial" font-size="20" text-anchor="middle">⊹</text>
+      <text x="95" y="135" font-family="Arial" font-size="9.5" fill="#888" text-anchor="middle">Inspect Mode</text>
+      <rect x="164" y="100" width="130" height="44" rx="6" fill="#1e1e38" stroke="#3a2060" stroke-width="1"/>
+      <text x="229" y="118" font-family="Arial" font-size="20" text-anchor="middle">📄</text>
+      <text x="229" y="135" font-family="Arial" font-size="9.5" fill="#888" text-anchor="middle">File Context Mode</text>
+      <rect x="308" y="100" width="120" height="44" rx="6" fill="#1e1e38" stroke="#3a2060" stroke-width="1"/>
+      <text x="368" y="118" font-family="Arial" font-size="20" text-anchor="middle">🎮</text>
+      <text x="368" y="135" font-family="Arial" font-size="9.5" fill="#888" text-anchor="middle">Demo Mode</text>
+      <text x="550" y="122" font-family="Arial" font-size="10" fill="#6666aa">← Modes 4, 5, 6 are workspace / session-level controls</text>
+      <text x="550" y="138" font-family="Arial" font-size="10" fill="#6666aa">↑ Modes 1, 2, 3 are prompt-input controls</text>
+    </svg>
+  </div>
+</div>
+
+<div class="mode-grid">
+  <div class="mode">
+    <div class="m-num">Mode 01</div>
+    <div class="m-icon">💡</div>
+    <div class="m-title">Plan Mode — Analyze Only</div>
+    <div class="m-desc">Toggle the <strong>lightbulb icon</strong>. The agent analyzes your request and describes its intended approach step-by-step — <strong>no files are changed</strong>. Use this before committing to understand exactly what will happen.</div>
+    <div class="m-best">Best for: scoping migrations · reviewing block strategy · assessing impact before execution</div>
+    <div class="code-eg"><span class="cm">"Plan how to migrate https://events.gehealthcare.com/events/rsna-2026"</span>
+→ Agent outlines: 5 sections identified, 3 new blocks needed,
+  files to be created: event-hero.js, brand.css, nav.md
+  <span class="cm">No files written. Plan only.</span></div>
+  </div>
+  <div class="mode">
+    <div class="m-num">Mode 02</div>
+    <div class="m-icon">🪄</div>
+    <div class="m-title">Execute Mode — AI-Driven Development</div>
+    <div class="m-desc">Toggle the <strong>magic wand icon</strong>. The agent carries out the full plan and writes actual file changes. All changes appear in the Code → Changes view as diffs before you stage or push anything.</div>
+    <div class="m-best">Best for: running migrations · block creation · design extraction · bulk imports</div>
+    <div class="code-eg"><span class="cm">"Migrate the design from https://events.gehealthcare.com"</span>
+→ Creates: <span class="st">styles/brand.css</span> (+142 lines)
+→ Updates: <span class="st">styles/styles.css</span>, all block CSS files
+  <span class="cm">Diffs visible in Code → Changes before staging.</span></div>
+  </div>
+  <div class="mode">
+    <div class="m-num">Mode 03</div>
+    <div class="m-icon">⏱️</div>
+    <div class="m-title">Prompt Queue — Automated Sequential Execution</div>
+    <div class="m-desc">Click the <strong>clock icon</strong> to queue multiple prompts. Each executes only after the previous one completes. Set your workflow and step away — results accumulate in the diff viewer.</div>
+    <div class="m-best">Best for: unattended long migrations · overnight batch workflows · multi-step pipelines</div>
+    <div class="code-eg"><span class="cm">Queue (runs in order, each awaits the last):</span>
+<span class="hl">1.</span> <span class="st">"Migrate the page https://events.gehealthcare.com/events/rsna-2026"</span>
+<span class="hl">2.</span> <span class="st">"Migrate the design from https://events.gehealthcare.com"</span>
+<span class="hl">3.</span> <span class="st">"Critique site"</span>
+<span class="hl">4.</span> <span class="st">"Create documentation for this project"</span></div>
+  </div>
+  <div class="mode">
+    <div class="m-num">Mode 04</div>
+    <div class="m-icon">🔍</div>
+    <div class="m-title">Inspect Mode — Targeted Element Context</div>
+    <div class="m-desc">Click the <strong>select icon (⊹)</strong> in the workspace toolbar. Click any element on the live page preview — the agent receives that element's exact HTML as context in the chat panel. Surgically target specific fixes.</div>
+    <div class="m-best">Best for: fixing specific layout issues · targeting broken elements · precise style corrections</div>
+    <div class="code-eg"><span class="cm">Click the event-hero title element on the preview page, then:</span>
+<span class="st">"Fix the font size and weight of this element to match the source"</span>
+→ Agent receives the exact &lt;h1&gt; HTML as context
+  <span class="cm">No guessing — it sees exactly what you clicked.</span></div>
+  </div>
+  <div class="mode">
+    <div class="m-num">Mode 05</div>
+    <div class="m-icon">📄</div>
+    <div class="m-title">File Context Mode — Code-Level Targeting</div>
+    <div class="m-desc">In Code → Files view, select any file or highlight specific lines, then click <strong>Add to chat</strong>. The file content is attached to the chat as context. Ask the agent to modify, explain, or refactor specific code.</div>
+    <div class="m-best">Best for: modifying a specific block JS or CSS file · explaining existing code · targeted refactors</div>
+    <div class="code-eg"><span class="cm">Select lines 44–78 of event-hero.js → Add to chat, then:</span>
+<span class="st">"Refactor this section to handle missing mediaCell gracefully
+and fall back to a solid purple background when no image is provided"</span></div>
+  </div>
+  <div class="mode">
+    <div class="m-num">Mode 06</div>
+    <div class="m-icon">🎮</div>
+    <div class="m-title">Demo Mode — Risk-Free Exploration</div>
+    <div class="m-desc">Available automatically on first sign-in before connecting a real project. A pre-configured Adobe demo site is provided. Explore every feature — migrations, critiques, design extraction — without touching your repo.</div>
+    <div class="m-best">Best for: team onboarding · evaluating capabilities · training · proof-of-concept before committing</div>
+    <div class="code-eg"><span class="cm">Activated automatically at first login.</span>
+<span class="cm">Banner at bottom of screen: "You are in Demo Mode"</span>
+Exit → Settings → Connect Your Site
+→ Authorize AEM Code Connector with GitHub credentials
+→ Your repo is now the active workspace</div>
+  </div>
+</div>

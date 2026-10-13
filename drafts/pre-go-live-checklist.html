@@ -1,0 +1,1246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AEM EDS — Pre Go-Live Checklist</title>
+  <style>
+    :root {
+      --color-primary: #1473e6;
+      --color-primary-dark: #0d66d0;
+      --color-success: #2d9d78;
+      --color-warning: #e68619;
+      --color-danger: #e34850;
+      --color-bg: #f8f9fa;
+      --color-card: #ffffff;
+      --color-border: #e1e4e8;
+      --color-text: #1b1f23;
+      --color-text-muted: #586069;
+      --color-code-bg: #f3f4f6;
+      --radius: 8px;
+      --shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      font-size: 15px;
+      line-height: 1.7;
+      color: var(--color-text);
+      background: var(--color-bg);
+    }
+
+    /* ── Header ─────────────────────────────────────────────── */
+    .doc-header {
+      background: linear-gradient(135deg, #0d66d0 0%, #1473e6 60%, #378ef0 100%);
+      color: #fff;
+      padding: 48px 32px 40px;
+    }
+    .doc-header .badge {
+      display: inline-block;
+      background: rgba(255,255,255,0.2);
+      border: 1px solid rgba(255,255,255,0.4);
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 4px 14px;
+      margin-bottom: 16px;
+    }
+    .doc-header h1 { font-size: 2.2rem; font-weight: 700; margin-bottom: 10px; }
+    .doc-header p  { font-size: 1.05rem; opacity: 0.9; max-width: 680px; }
+
+    /* ── Layout ──────────────────────────────────────────────── */
+    .container { max-width: 960px; margin: 0 auto; padding: 40px 24px 80px; }
+
+    .toc-card {
+      background: var(--color-card);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius);
+      padding: 24px 28px;
+      margin-bottom: 40px;
+      box-shadow: var(--shadow);
+    }
+    .toc-card h2 { font-size: 1rem; font-weight: 700; margin-bottom: 14px; color: var(--color-text-muted); text-transform: uppercase; letter-spacing: 0.05em; }
+    .toc-card ol { padding-left: 20px; }
+    .toc-card li { margin-bottom: 6px; }
+    .toc-card a  { color: var(--color-primary); text-decoration: none; font-weight: 500; }
+    .toc-card a:hover { text-decoration: underline; }
+
+    /* ── Sections ────────────────────────────────────────────── */
+    .section {
+      background: var(--color-card);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius);
+      margin-bottom: 32px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 18px 24px;
+      border-bottom: 1px solid var(--color-border);
+      background: #fafbfc;
+    }
+    .section-number {
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      background: var(--color-primary);
+      color: #fff;
+      font-weight: 700;
+      font-size: 14px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .section-title { font-size: 1.15rem; font-weight: 700; }
+    .section-subtitle { font-size: 0.85rem; color: var(--color-text-muted); margin-top: 2px; }
+
+    .section-body { padding: 24px; }
+
+    /* ── Steps ───────────────────────────────────────────────── */
+    .steps { list-style: none; counter-reset: step-counter; }
+    .steps li {
+      counter-increment: step-counter;
+      display: flex;
+      gap: 14px;
+      padding: 14px 0;
+      border-bottom: 1px solid #f0f1f3;
+    }
+    .steps li:last-child { border-bottom: none; padding-bottom: 0; }
+    .step-num {
+      width: 28px; height: 28px;
+      background: #eaf2ff;
+      color: var(--color-primary);
+      border-radius: 50%;
+      font-size: 12px;
+      font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+    .step-content { flex: 1; }
+    .step-content strong { display: block; margin-bottom: 4px; font-size: 0.95rem; }
+    .step-content p { color: var(--color-text-muted); font-size: 0.9rem; margin-bottom: 6px; }
+
+    /* ── Code blocks ─────────────────────────────────────────── */
+    .code-block {
+      background: #1b1f23;
+      color: #e1e4e8;
+      border-radius: 6px;
+      padding: 14px 16px;
+      font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+      font-size: 13px;
+      line-height: 1.6;
+      overflow-x: auto;
+      margin: 8px 0;
+    }
+    .code-inline {
+      background: var(--color-code-bg);
+      border: 1px solid var(--color-border);
+      border-radius: 4px;
+      padding: 1px 6px;
+      font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+      font-size: 12.5px;
+      color: #d73a49;
+    }
+
+    /* ── Callouts ────────────────────────────────────────────── */
+    .callout {
+      display: flex;
+      gap: 12px;
+      padding: 14px 16px;
+      border-radius: 6px;
+      margin: 12px 0;
+      font-size: 0.9rem;
+    }
+    .callout-icon { font-size: 1.1rem; flex-shrink: 0; line-height: 1.5; }
+    .callout.info    { background: #eaf2ff; border-left: 4px solid var(--color-primary); }
+    .callout.warning { background: #fff4e5; border-left: 4px solid var(--color-warning); }
+    .callout.success { background: #e8f7f2; border-left: 4px solid var(--color-success); }
+    .callout.danger  { background: #ffeef0; border-left: 4px solid var(--color-danger); }
+
+    /* ── Table ───────────────────────────────────────────────── */
+    table { width: 100%; border-collapse: collapse; font-size: 0.9rem; margin: 12px 0; }
+    th { background: #f3f4f6; font-weight: 700; text-align: left; padding: 10px 14px; border: 1px solid var(--color-border); }
+    td { padding: 9px 14px; border: 1px solid var(--color-border); vertical-align: top; }
+    tr:nth-child(even) td { background: #fafbfc; }
+
+    /* ── Checklist boxes ─────────────────────────────────────── */
+    .checklist { list-style: none; }
+    .checklist li {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 8px 0;
+      font-size: 0.9rem;
+      border-bottom: 1px dashed #eee;
+    }
+    .checklist li:last-child { border-bottom: none; }
+    .checklist .check { font-size: 1rem; flex-shrink: 0; color: var(--color-success); }
+
+    /* ── Screenshot placeholder ──────────────────────────────── */
+    .screenshot {
+      border: 2px dashed #c8d0da;
+      border-radius: 8px;
+      background: #f5f7fa;
+      padding: 28px 20px;
+      text-align: center;
+      color: var(--color-text-muted);
+      font-size: 0.85rem;
+      margin: 12px 0;
+    }
+    .screenshot .icon { font-size: 2.2rem; display: block; margin-bottom: 6px; }
+    .screenshot strong { display: block; font-size: 0.95rem; color: var(--color-text); margin-bottom: 4px; }
+
+    /* ── References ──────────────────────────────────────────── */
+    .references {
+      background: var(--color-card);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius);
+      padding: 28px;
+      box-shadow: var(--shadow);
+      margin-top: 40px;
+    }
+    .references h2 { font-size: 1.1rem; font-weight: 700; margin-bottom: 18px; }
+    .ref-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; }
+    .ref-card {
+      border: 1px solid var(--color-border);
+      border-radius: 6px;
+      padding: 14px 16px;
+      text-decoration: none;
+      color: var(--color-text);
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+    .ref-card:hover { border-color: var(--color-primary); box-shadow: 0 0 0 3px rgba(20,115,230,0.08); }
+    .ref-card .ref-tag { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--color-primary); margin-bottom: 4px; }
+    .ref-card .ref-title { font-weight: 600; font-size: 0.9rem; }
+    .ref-card .ref-url  { font-size: 0.78rem; color: var(--color-text-muted); margin-top: 2px; word-break: break-all; }
+
+    /* ── Footer ──────────────────────────────────────────────── */
+    .doc-footer {
+      text-align: center;
+      padding: 28px;
+      font-size: 0.85rem;
+      color: var(--color-text-muted);
+      border-top: 1px solid var(--color-border);
+      margin-top: 48px;
+    }
+
+    @media (min-width: 600px) {
+      .doc-header { padding: 56px 48px 48px; }
+      .doc-header h1 { font-size: 2.6rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!--  HEADER                                                     -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<header class="doc-header">
+  <span class="badge">AEM Edge Delivery Services</span>
+  <h1>Pre Go-Live Checklist</h1>
+  <p>A step-by-step guide every AEM EDS developer must complete before pointing a production domain to an <code>.aem.live</code> site. Follow each section in order and tick off every item before requesting a go-live date.</p>
+</header>
+
+<div class="container">
+
+  <!-- ── Table of Contents ─────────────────────────────────── -->
+  <div class="toc-card">
+    <h2>Table of Contents</h2>
+    <ol>
+      <li><a href="#content-qa">Content &amp; Design QA</a></li>
+      <li><a href="#performance">Performance Validation — Lighthouse 100</a></li>
+      <li><a href="#analytics">Analytics &amp; Martech Validation</a></li>
+      <li><a href="#optel">Operational Telemetry (OpTel)</a></li>
+      <li><a href="#redirects">Legacy Redirects Validation</a></li>
+      <li><a href="#sitemap">Sitemap &amp; robots.txt</a></li>
+      <li><a href="#canonical">Canonical URL Validation</a></li>
+      <li><a href="#favicon">Favicon</a></li>
+      <li><a href="#auth">Author Authentication</a></li>
+      <li><a href="#cdn">CDN Configuration</a></li>
+      <li><a href="#push-invalidation">Push Invalidation Setup</a></li>
+      <li><a href="#notify">Notify Adobe Engineering</a></li>
+    </ol>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════
+       1. CONTENT & DESIGN QA
+  ══════════════════════════════════════════════════════════════ -->
+  <section class="section" id="content-qa">
+    <div class="section-header">
+      <div class="section-number">1</div>
+      <div>
+        <div class="section-title">Content &amp; Design QA</div>
+        <div class="section-subtitle">Verify every page looks and behaves correctly on the preview environment</div>
+      </div>
+    </div>
+    <div class="section-body">
+      <ol class="steps">
+        <li>
+          <div class="step-num">1</div>
+          <div class="step-content">
+            <strong>Open your feature preview URL</strong>
+            <p>Construct the URL using your branch, repo, and org:</p>
+            <div class="code-block">https://{branch}--{repo}--{owner}.aem.page/</div>
+            <p>Example: <code class="code-inline">https://main--eds-events-gehealthcare--gehealthcare.aem.page/</code></p>
+          </div>
+        </li>
+        <li>
+          <div class="step-num">2</div>
+          <div class="step-content">
+            <strong>Cross-browser &amp; responsive check</strong>
+            <p>Test in Chrome, Firefox, Safari and Edge at mobile (375px), tablet (768px), and desktop (1280px) widths.</p>
+          </div>
+        </li>
+        <li>
+          <div class="step-num">3</div>
+          <div class="step-content">
+            <strong>Accessibility audit (WCAG 2.1 AA)</strong>
+            <p>Run the Chrome DevTools Accessibility panel or Axe extension. Check for:</p>
+            <ul style="margin-left:16px;font-size:0.88rem;color:var(--color-text-muted);">
+              <li>Correct heading hierarchy (H1 → H2 → H3)</li>
+              <li>All images have meaningful <code class="code-inline">alt</code> text</li>
+              <li>Interactive elements have focus styles and ARIA labels</li>
+              <li>Colour contrast ratio ≥ 4.5:1 for body text</li>
+            </ul>
+          </div>
+        </li>
+        <li>
+          <div class="step-num">4</div>
+          <div class="step-content">
+            <strong>SEO meta tags</strong>
+            <p>Inspect the page source (<code class="code-inline">Ctrl+U</code>) and confirm each page has:</p>
+            <div class="code-block">&lt;title&gt;Descriptive Page Title | Brand&lt;/title&gt;
+&lt;meta name="description" content="..." /&gt;
+&lt;meta property="og:title" content="..." /&gt;
+&lt;meta property="og:image" content="..." /&gt;</div>
+          </div>
+        </li>
+        <li>
+          <div class="step-num">5</div>
+          <div class="step-content">
+            <strong>Inspect raw HTML from the dev server</strong>
+            <p>Use <code class="code-inline">curl</code> to see exactly what AEM delivers:</p>
+            <div class="code-block">curl http://localhost:3000/path/to/page.plain.html</div>
+            <p>Confirm all canonical content is in the initial HTML payload — not fetched by JavaScript after the fact.</p>
+          </div>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════
+       2. PERFORMANCE — LIGHTHOUSE 100
+  ══════════════════════════════════════════════════════════════ -->
+  <section class="section" id="performance">
+    <div class="section-header">
+      <div class="section-number">2</div>
+      <div>
+        <div class="section-title">Performance Validation — Lighthouse Score 100</div>
+        <div class="section-subtitle">Every page must score 100 on Google PageSpeed Insights (mobile + desktop)</div>
+      </div>
+    </div>
+    <div class="section-body">
+
+      <div class="callout warning">
+        <span class="callout-icon">⚠️</span>
+        <div><strong>Mandatory requirement.</strong> The AEM GitHub bot will automatically fail your PR if the PageSpeed score drops below 100. Test on the <em>preview</em> URL (<code class="code-inline">.aem.page</code>), not localhost.</div>
+      </div>
+
+      <ol class="steps">
+        <li>
+          <div class="step-num">1</div>
+          <div class="step-content">
+            <strong>Run PageSpeed Insights — Mobile</strong>
+            <p>Go to <strong>Google PageSpeed Insights</strong> and paste your preview URL:</p>
+            <div class="code-block">https://pagespeed.web.dev/</div>
+            <p>Select <strong>Mobile</strong> tab first — mobile scores are harder to achieve and are what the AEM bot checks.</p>
+            <div class="screenshot">
+              <span class="icon">📊</span>
+              <strong>PageSpeed Insights — Mobile Result</strong>
+              Insert a screenshot of the PSI result here. Target: all four scores at 100 (Performance, Accessibility, Best Practices, SEO).
+            </div>
+          </div>
+        </li>
+        <li>
+          <div class="step-num">2</div>
+          <div class="step-content">
+            <strong>Run PageSpeed Insights — Desktop</strong>
+            <p>Switch to the <strong>Desktop</strong> tab and re-run.</p>
+            <div class="screenshot">
+              <span class="icon">🖥️</span>
+              <strong>PageSpeed Insights — Desktop Result</strong>
+              Insert a screenshot of the desktop PSI result here.
+            </div>
+          </div>
+        </li>
+        <li>
+          <div class="step-num">3</div>
+          <div class="step-content">
+            <strong>Check Core Web Vitals targets</strong>
+            <table>
+              <tr><th>Metric</th><th>Target (Good)</th><th>What it measures</th></tr>
+              <tr><td>LCP — Largest Contentful Paint</td><td>&lt; 2.5 s</td><td>When the hero image/text is visible</td></tr>
+              <tr><td>INP — Interaction to Next Paint</td><td>&lt; 200 ms</td><td>Responsiveness to user clicks</td></tr>
+              <tr><td>CLS — Cumulative Layout Shift</td><td>&lt; 0.1</td><td>Visual stability — no jumping elements</td></tr>
+            </table>
+          </div>
+        </li>
+        <li>
+          <div class="step-num">4</div>
+          <div class="step-content">
+            <strong>Common fixes if score is below 100</strong>
+            <ul style="font-size:0.88rem;color:var(--color-text-muted);margin-left:16px;">
+              <li><strong>LCP too slow:</strong> Keep the total network payload before LCP under 100 KB. Move non-critical code to the lazy or delayed phase.</li>
+              <li><strong>CLS:</strong> Reserve space for images using explicit width/height attributes. Don't load fonts before LCP.</li>
+              <li><strong>TBT/INP:</strong> Move third-party scripts (analytics, chat, tag managers) to the <code class="code-inline">delayed.js</code> phase — triggered ≥ 3 s after LCP.</li>
+              <li><strong>Second origin before LCP:</strong> Never connect to a second host before the LCP event. Combine resources on the same origin.</li>
+              <li><strong>Avoid preload/fetchpriority:</strong> Adding <code class="code-inline">&lt;link rel="preload"&gt;</code> or <code class="code-inline">fetchpriority="high"</code> actually harms PSI scores in AEM EDS.</li>
+            </ul>
+          </div>
+        </li>
+        <li>
+          <div class="step-num">5</div>
+          <div class="step-content">
+            <strong>Validate via the AEM GitHub PR check</strong>
+            <p>When you open a Pull Request, the AEM bot runs PSI automatically using the URL in your PR description. Check the status with:</p>
+            <div class="code-block">gh pr checks</div>
+            <div class="screenshot">
+              <span class="icon">✅</span>
+              <strong>GitHub PR Checks — AEM Lighthouse Bot</strong>
+              Insert a screenshot of the passing PR checks here. All checks should be green.
+            </div>
+          </div>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════
+       3. ANALYTICS
+  ══════════════════════════════════════════════════════════════ -->
+  <section class="section" id="analytics">
+    <div class="section-header">
+      <div class="section-number">3</div>
+      <div>
+        <div class="section-title">Analytics &amp; Martech Validation</div>
+        <div class="section-subtitle">Confirm all tracking tags fire correctly on the preview environment</div>
+      </div>
+    </div>
+    <div class="section-body">
+
+      <div class="callout info">
+        <span class="callout-icon">ℹ️</span>
+        <div>After a go-live, analytics baselines for pageviews, bounce rate, and time-on-page <strong>will change</strong> due to the new loading sequence. This is expected and normal. Align with your analytics team before launch.</div>
+      </div>
+
+      <ol class="steps">
+        <li>
+          <div class="step-num">1</div>
+          <div class="step-content">
+            <strong>Open Chrome DevTools → Network tab</strong>
+            <p>Filter by the analytics domain (e.g., <code class="code-inline">google-analytics.com</code>, <code class="code-inline">adobedtm.com</code>). Reload the page and confirm tracking requests fire.</p>
+            <div class="screenshot">
+              <span class="icon">🌐</span>
+              <strong>Network Tab — Analytics Requests</strong>
+              Insert a screenshot showing analytics network requests being made during page load.
+            </div>
+          </div>
+        </li>
+        <li>
+          <div class="step-num">2</div>
+          <div class="step-content">
+            <strong>Verify in your analytics dashboard</strong>
+            <p>Open your analytics platform (Google Analytics, Adobe Analytics, etc.) real-time report. Browse several pages on the preview URL and confirm visits appear within 30–60 seconds.</p>
+          </div>
+        </li>
+        <li>
+          <div class="step-num">3</div>
+          <div class="step-content">
+            <strong>Verify martech loads in the Delayed phase</strong>
+            <p>Analytics, tag managers, consent banners and chat widgets must be loaded in <code class="code-inline">scripts/delayed.js</code> — not in the eager or lazy phase. Open DevTools → Performance and confirm heavy third-party scripts only start after the LCP event.</p>
+          </div>
+        </li>
+        <li>
+          <div class="step-num">4</div>
+          <div class="step-content">
+            <strong>Confirm bottom-of-funnel events are unchanged</strong>
+            <p>Form submissions, transactions and checkout events are captured by server-side systems. Verify these are unaffected by the new loading sequence by submitting a test form and checking the CRM or backend.</p>
+          </div>
+        </li>
+        <li>
+          <div class="step-num">5</div>
+          <div class="step-content">
+            <strong>Brief your analytics team</strong>
+            <p>Share the expected baseline shift with the corresponding analysts. Document which metrics you expect to increase or decrease and why, so the team is not alarmed by the changes post-launch.</p>
+          </div>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════
+       4. OPTEL
+  ══════════════════════════════════════════════════════════════ -->
+  <section class="section" id="optel">
+    <div class="section-header">
+      <div class="section-number">4</div>
+      <div>
+        <div class="section-title">Operational Telemetry (OpTel)</div>
+        <div class="section-subtitle">Instrument your site before launch for before/after performance comparison</div>
+      </div>
+    </div>
+    <div class="section-body">
+      <ol class="steps">
+        <li>
+          <div class="step-num">1</div>
+          <div class="step-content">
+            <strong>What is OpTel?</strong>
+            <p>AEM's built-in Real Use Monitoring (RUM) collects Core Web Vitals from real visitors in the field. It is lightweight, privacy-safe, and already bundled with AEM boilerplate. Adding it to your existing pre-migration site early gives you a baseline to compare against after go-live.</p>
+          </div>
+        </li>
+        <li>
+          <div class="step-num">2</div>
+          <div class="step-content">
+            <strong>Verify RUM is active</strong>
+            <p>Open the browser console on your preview URL. You should see no RUM-related errors. Alternatively, use the AEM RUM Dashboard available to your project team.</p>
+          </div>
+        </li>
+        <li>
+          <div class="step-num">3</div>
+          <div class="step-content">
+            <strong>Instrument the existing site (if migrating)</strong>
+            <p>Add OpTel to the <em>old</em> site as early as possible before migration. This lets you measure CWV in the field before the switch and compare with post-launch field data.</p>
+          </div>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════
+       5. REDIRECTS
+  ══════════════════════════════════════════════════════════════ -->
+  <section class="section" id="redirects">
+    <div class="section-header">
+      <div class="section-number">5</div>
+      <div>
+        <div class="section-title">Legacy Redirects Validation</div>
+        <div class="section-subtitle">Map all retired URLs to new destinations before going live</div>
+      </div>
+    </div>
+    <div class="section-body">
+      <ol class="steps">
+        <li>
+          <div class="step-num">1</div>
+          <div class="step-content">
+            <strong>Find high-impact legacy URLs using Google Search Console</strong>
+            <p>Open Google Search Console → <strong>Links → Top linked pages</strong>. Export the list and identify any URLs that will no longer exist after migration.</p>
+            <div class="screenshot">
+              <span class="icon">🔗</span>
+              <strong>Google Search Console — Top Linked Pages</strong>
+              Insert a screenshot of the Search Console Links report. These are the URLs you must redirect.
+            </div>
+          </div>
+        </li>
+        <li>
+          <div class="step-num">2</div>
+          <div class="step-content">
+            <strong>Create the redirects spreadsheet</strong>
+            <p>In the root of your SharePoint / Google Drive project folder, create a file named <code class="code-inline">redirects.xlsx</code> (SharePoint) or <code class="code-inline">redirects</code> sheet (Google Drive) with exactly two columns:</p>
+            <table>
+              <tr><th>Source</th><th>Destination</th></tr>
+              <tr><td>/old-page-url</td><td>/new-page-url</td></tr>
+              <tr><td>/legacy/product-name</td><td>/products/product-name</td></tr>
+              <tr><td>/outdated-path</td><td>https://other-domain.com/page</td></tr>
+            </table>
+            <div class="callout info">
+              <span class="callout-icon">ℹ️</span>
+              <div><strong>Source</strong> is always a relative path (no domain). <strong>Destination</strong> can be relative or a full URL for cross-domain redirects.</div>
+            </div>
+          </div>
+        </li>
+        <li>
+          <div class="step-num">3</div>
+          <div class="step-content">
+            <strong>Multiple worksheets? Use the right sheet name</strong>
+            <p>If your spreadsheet has multiple sheets, redirects only work on the sheet named <strong>helix-default</strong>. Rename your sheet accordingly.</p>
+          </div>
+        </li>
+        <li>
+          <div class="step-num">4</div>
+          <div class="step-content">
+            <strong>Preview and test redirects</strong>
+            <p>Use AEM Sidekick to publish the redirects spreadsheet to the preview environment. Then test each redirect:</p>
+            <div class="code-block"># Test a redirect (should return HTTP 301)
+curl -I https://{branch}--{repo}--{owner}.aem.page/old-page-url</div>
+            <p>Look for <code class="code-inline">HTTP/2 301</code> and a <code class="code-inline">Location:</code> header pointing to the new URL.</p>
+          </div>
+        </li>
+        <li>
+          <div class="step-num">5</div>
+          <div class="step-content">
+            <strong>Wildcard redirects (CDN-level only)</strong>
+            <p>If you need to redirect an entire path pattern (e.g., all <code class="code-inline">/old-section/*</code> pages), configure these at the CDN layer — they are not supported in the redirects spreadsheet. Example pattern:</p>
+            <div class="code-block">Input:       /old-section/*
+Redirect to: /new-section/$1</div>
+            <div class="callout warning">
+              <span class="callout-icon">⚠️</span>
+              <div>Wildcard redirects can create 301 → 404 chains. Only use them when individual URL mapping is impractical. Always check your CDN vendor's documentation for the exact syntax.</div>
+            </div>
+          </div>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════
+       6. SITEMAP & ROBOTS.TXT
+  ══════════════════════════════════════════════════════════════ -->
+  <section class="section" id="sitemap">
+    <div class="section-header">
+      <div class="section-number">6</div>
+      <div>
+        <div class="section-title">Sitemap &amp; robots.txt</div>
+        <div class="section-subtitle">Help search engines discover and crawl your pages correctly</div>
+      </div>
+    </div>
+    <div class="section-body">
+
+      <div class="callout success">
+        <span class="callout-icon">✅</span>
+        <div>AEM Edge Delivery Services generates a sitemap <strong>automatically</strong> from the query index each time you publish a page. You do not need to build it manually.</div>
+      </div>
+
+      <ol class="steps">
+        <li>
+          <div class="step-num">1</div>
+          <div class="step-content">
+            <strong>Verify the sitemap is generated</strong>
+            <p>Open the sitemap URL on your preview domain:</p>
+            <div class="code-block">https://{branch}--{repo}--{owner}.aem.page/sitemap.xml</div>
+            <p>You should see an XML file listing all published pages.</p>
+            <div class="screenshot">
+              <span class="icon">🗺️</span>
+              <strong>sitemap.xml — Browser View</strong>
+              Insert a screenshot of the sitemap.xml file rendered in the browser. Verify it lists your pages with correct &lt;loc&gt; entries.
+            </div>
+          </div>
+        </li>
+        <li>
+          <div class="step-num">2</div>
+          <div class="step-content">
+            <strong>Exclude specific pages from the sitemap (noindex)</strong>
+            <p>To keep a page out of the sitemap AND prevent search engines from indexing it, set the <code class="code-inline">robots</code> metadata on that page to <code class="code-inline">noindex</code>.</p>
+            <p><strong>In SharePoint / Google Drive page metadata:</strong></p>
+            <table>
+              <tr><th>Property</th><th>Value</th></tr>
+              <tr><td>robots</td><td>noindex</td></tr>
+            </table>
+            <p>AEM's sitemap automatically skips pages where the <code class="code-inline">robots</code> column contains <code class="code-inline">noindex</code>. This works as long as a <code class="code-inline">robots</code> column exists in the query index.</p>
+            <div class="callout info">
+              <span class="callout-icon">ℹ️</span>
+              <div><strong>Excluding 30 pages from 100:</strong> Add <code class="code-inline">robots: noindex</code> metadata to each of the 30 pages you want hidden. After publishing, the sitemap will only list the remaining 70 pages. The pages are still accessible by direct URL — they are just not surfaced to search engines.</div>
+            </div>
+          </div>
+        </li>
+        <li>
+          <div class="step-num">3</div>
+          <div class="step-content">
+            <strong>Add hreflang for multilingual sites</strong>
+            <p>For sites targeting multiple regions/languages, add <code class="code-inline">hreflang</code> entries to the sitemap. This prevents duplicate content penalties across language versions. Configure this via your sitemap settings in the AEM configuration service.</p>
+          </div>
+        </li>
+        <li>
+          <div class="step-num">4</div>
+          <div class="step-content">
+            <strong>Configure robots.txt</strong>
+            <p>Add a custom <code class="code-inline">robots.txt</code> via the AEM Configuration Service. A good default that allows all crawlers and references your sitemap:</p>
+            <div class="code-block">User-agent: *
+Allow: /
+
+Sitemap: https://www.yourdomain.com/sitemap.xml</div>
+            <div class="callout warning">
+              <span class="callout-icon">⚠️</span>
+              <div><strong>Important:</strong> <code class="code-inline">robots.txt</code> is case-sensitive. Use exact paths. Note: adding <code class="code-inline">Disallow:</code> to a URL does NOT remove it from Google's index — it only restricts crawling. To properly remove a URL, use <code class="code-inline">Allow</code> + a <code class="code-inline">noindex</code> meta tag on that page.</div>
+            </div>
+          </div>
+        </li>
+        <li>
+          <div class="step-num">5</div>
+          <div class="step-content">
+            <strong>Block pages from crawlers without removing them (robots meta tag)</strong>
+            <p>If you have pages that should be accessible via direct link but not indexed by Google:</p>
+            <div class="code-block">&lt;!-- Add to the page metadata in SharePoint / Google Drive --&gt;
+robots: noindex, nofollow</div>
+            <p>This renders as a <code class="code-inline">&lt;meta name="robots" content="noindex, nofollow"&gt;</code> tag in the page HTML. AEM reads this tag both for the sitemap exclusion and for the query index.</p>
+          </div>
+        </li>
+        <li>
+          <div class="step-num">6</div>
+          <div class="step-content">
+            <strong>Verify robots.txt is accessible</strong>
+            <div class="code-block">curl https://www.yourdomain.com/robots.txt</div>
+            <p>Confirm it returns the correct content and references your sitemap URL.</p>
+            <div class="screenshot">
+              <span class="icon">🤖</span>
+              <strong>robots.txt — Curl Output</strong>
+              Insert a screenshot or copy of the robots.txt curl response here. Verify the Sitemap line points to the correct production URL.
+            </div>
+          </div>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════
+       7. CANONICAL URLS
+  ══════════════════════════════════════════════════════════════ -->
+  <section class="section" id="canonical">
+    <div class="section-header">
+      <div class="section-number">7</div>
+      <div>
+        <div class="section-title">Canonical URL Validation</div>
+        <div class="section-subtitle">All canonical URLs must return HTTP 2xx — no 3xx or 4xx</div>
+      </div>
+    </div>
+    <div class="section-body">
+      <ol class="steps">
+        <li>
+          <div class="step-num">1</div>
+          <div class="step-content">
+            <strong>What is a canonical URL?</strong>
+            <p>A canonical URL is the preferred version of a page. It is declared in the <code class="code-inline">&lt;head&gt;</code> as:</p>
+            <div class="code-block">&lt;link rel="canonical" href="https://www.yourdomain.com/the-page" /&gt;</div>
+            <p>If the canonical URL returns a redirect (3xx) or error (4xx), Google may not correctly index your page, leading to duplicate content issues.</p>
+          </div>
+        </li>
+        <li>
+          <div class="step-num">2</div>
+          <div class="step-content">
+            <strong>Extract all canonical URLs from your pages</strong>
+            <p>Run a crawl using Screaming Frog SEO Spider (free up to 500 URLs), or extract manually from the sitemap:</p>
+            <div class="code-block"># Fetch the sitemap and extract all URLs
+curl -s https://{branch}--{repo}--{owner}.aem.page/sitemap.xml \
+  | grep -o '&lt;loc&gt;[^&lt;]*&lt;/loc&gt;' \
+  | sed 's/&lt;loc&gt;//g;s/&lt;\/loc&gt;//g'</div>
+          </div>
+        </li>
+        <li>
+          <div class="step-num">3</div>
+          <div class="step-content">
+            <strong>Test each canonical URL returns HTTP 200</strong>
+            <div class="code-block"># Check HTTP status code for a URL
+curl -o /dev/null -s -w "%{http_code}" https://www.yourdomain.com/the-page
+
+# Bulk check all URLs in a list file
+while IFS= read -r url; do
+  status=$(curl -o /dev/null -s -w "%{http_code}" "$url")
+  echo "$status $url"
+done &lt; urls.txt</div>
+            <p>Every URL must return <code class="code-inline">200</code>. Any <code class="code-inline">301</code>, <code class="code-inline">302</code>, or <code class="code-inline">404</code> must be fixed before go-live.</p>
+          </div>
+        </li>
+        <li>
+          <div class="step-num">4</div>
+          <div class="step-content">
+            <strong>Common canonical issues to fix</strong>
+            <table>
+              <tr><th>Issue</th><th>Fix</th></tr>
+              <tr><td>www vs non-www mismatch</td><td>Add a redirect from the non-canonical version to the canonical. Configure in CDN or redirects sheet.</td></tr>
+              <tr><td>Trailing slash inconsistency</td><td>Pick one convention (with or without slash) and redirect all variants to it.</td></tr>
+              <tr><td>HTTP vs HTTPS</td><td>HTTPS is mandatory in AEM EDS. Ensure all canonical URLs use HTTPS.</td></tr>
+            </table>
+          </div>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════
+       8. FAVICON
+  ══════════════════════════════════════════════════════════════ -->
+  <section class="section" id="favicon">
+    <div class="section-header">
+      <div class="section-number">8</div>
+      <div>
+        <div class="section-title">Favicon</div>
+        <div class="section-subtitle">Add a site icon so it appears in browser tabs and bookmarks</div>
+      </div>
+    </div>
+    <div class="section-body">
+      <ol class="steps">
+        <li>
+          <div class="step-num">1</div>
+          <div class="step-content">
+            <strong>Add the favicon to the repository</strong>
+            <p>Place your favicon in the project root or the <code class="code-inline">icons/</code> folder and commit it:</p>
+            <div class="code-block">/favicon.ico          ← standard browser fallback (32×32 px)
+/favicon.png          ← modern browsers (recommended, 32×32 or 48×48 px)</div>
+          </div>
+        </li>
+        <li>
+          <div class="step-num">2</div>
+          <div class="step-content">
+            <strong>Reference the favicon in head.html</strong>
+            <p>Open <code class="code-inline">head.html</code> and add:</p>
+            <div class="code-block">&lt;link rel="icon" type="image/png" href="/favicon.png" /&gt;
+&lt;link rel="shortcut icon" href="/favicon.ico" /&gt;</div>
+          </div>
+        </li>
+        <li>
+          <div class="step-num">3</div>
+          <div class="step-content">
+            <strong>Verify in the browser</strong>
+            <p>Open the preview URL. The favicon should appear in the browser tab. If it does not, hard-refresh with <code class="code-inline">Ctrl+Shift+R</code>.</p>
+            <div class="screenshot">
+              <span class="icon">🔖</span>
+              <strong>Browser Tab — Favicon Visible</strong>
+              Insert a screenshot of the browser tab showing the site favicon.
+            </div>
+          </div>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════
+       9. AUTHENTICATION
+  ══════════════════════════════════════════════════════════════ -->
+  <section class="section" id="auth">
+    <div class="section-header">
+      <div class="section-number">9</div>
+      <div>
+        <div class="section-title">Author Authentication</div>
+        <div class="section-subtitle">Control who can preview and publish content via the AEM Sidekick</div>
+      </div>
+    </div>
+    <div class="section-body">
+
+      <div class="callout info">
+        <span class="callout-icon">ℹ️</span>
+        <div>By default, authentication is <strong>not required</strong> for the AEM Sidekick. This step is only needed if you want to restrict preview/publish access to specific users or domains.</div>
+      </div>
+
+      <ol class="steps">
+        <li>
+          <div class="step-num">1</div>
+          <div class="step-content">
+            <strong>Decide your access model</strong>
+            <table>
+              <tr><th>Option</th><th>When to use</th></tr>
+              <tr><td>Open (default)</td><td>Anyone with the URL can preview; suitable for low-security marketing sites</td></tr>
+              <tr><td>Domain-restricted</td><td>Only users with <code class="code-inline">*@yourcompany.com</code> email can preview</td></tr>
+              <tr><td>Individual user list</td><td>Exact email addresses are granted publish rights</td></tr>
+            </table>
+          </div>
+        </li>
+        <li>
+          <div class="step-num">2</div>
+          <div class="step-content">
+            <strong>Configure access via the Admin API (domain-wide example)</strong>
+            <div class="code-block">curl -X POST https://admin.hlx.page/config/{org}/sites/{site}/access/admin.json \
+  -H "content-type: application/json" \
+  -H "x-auth-token: &lt;your-auth-token&gt;" \
+  --data '{
+    "role": {
+      "author": [ "*@yourcompany.com" ],
+      "publish": [ "admin.user@yourcompany.com" ]
+    }
+  }'</div>
+            <div class="callout info">
+              <span class="callout-icon">ℹ️</span>
+              <div>Get your <code class="code-inline">x-auth-token</code> from the browser Network tab — copy it from any authenticated Sidekick request to <code class="code-inline">admin.hlx.page</code>.</div>
+            </div>
+          </div>
+        </li>
+        <li>
+          <div class="step-num">3</div>
+          <div class="step-content">
+            <strong>Test the Sidekick login flow</strong>
+            <p>After setting the access config, open Sidekick on a page. You should see a <strong>Sign In</strong> button. Click it and authenticate with your Microsoft (SharePoint) or Google (Drive) account.</p>
+            <div class="screenshot">
+              <span class="icon">🔐</span>
+              <strong>AEM Sidekick — Sign In Button</strong>
+              Insert a screenshot of the Sidekick showing the Sign In option after authentication is enabled.
+            </div>
+          </div>
+        </li>
+        <li>
+          <div class="step-num">4</div>
+          <div class="step-content">
+            <strong>Grant Azure AD admin consent (SharePoint only)</strong>
+            <p>If using SharePoint, an Azure AD admin must grant consent for the AEM Content Integration Admin API. Steps:</p>
+            <ul style="font-size:0.88rem;color:var(--color-text-muted);margin-left:16px;">
+              <li>Go to Azure Portal → Active Directory → Enterprise Applications</li>
+              <li>Search for <strong>AEM Content Integration Admin API</strong></li>
+              <li>Select Permissions tab → click <strong>Grant admin consent for {organization}</strong></li>
+            </ul>
+            <div class="screenshot">
+              <span class="icon">🏢</span>
+              <strong>Azure Portal — Grant Admin Consent</strong>
+              Insert a screenshot of the Azure Portal Enterprise Applications permissions tab.
+            </div>
+          </div>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════
+       10. CDN CONFIGURATION
+  ══════════════════════════════════════════════════════════════ -->
+  <section class="section" id="cdn">
+    <div class="section-header">
+      <div class="section-number">10</div>
+      <div>
+        <div class="section-title">CDN Configuration</div>
+        <div class="section-subtitle">Point your production CDN to the main branch .aem.live origin</div>
+      </div>
+    </div>
+    <div class="section-body">
+
+      <div class="callout danger">
+        <span class="callout-icon">🚨</span>
+        <div><strong>Always use the main branch</strong> for production. Your CDN origin must start with <code class="code-inline">main--</code>. Using a feature branch in production disables caching and push invalidation.</div>
+      </div>
+
+      <ol class="steps">
+        <li>
+          <div class="step-num">1</div>
+          <div class="step-content">
+            <strong>Choose your CDN option</strong>
+            <table>
+              <tr><th>Option</th><th>Who uses it</th></tr>
+              <tr><td><strong>Adobe Managed CDN</strong></td><td>Included in your AEM Sites license. Zero CDN management overhead.</td></tr>
+              <tr><td><strong>BYO CDN</strong> (Fastly, Akamai, Cloudflare, CloudFront)</td><td>You already have a CDN contract and want to keep using it.</td></tr>
+            </table>
+          </div>
+        </li>
+        <li>
+          <div class="step-num">2</div>
+          <div class="step-content">
+            <strong>Required CDN settings (BYO CDN)</strong>
+            <table>
+              <tr><th>Setting</th><th>Required Value</th></tr>
+              <tr><td>Origin URL</td><td><code class="code-inline">https://main--{repo}--{org}.aem.live</code></td></tr>
+              <tr><td>X-Forwarded-Host header</td><td>Your production domain (e.g., <code class="code-inline">www.yourdomain.com</code>)</td></tr>
+              <tr><td>X-Push-Invalidation header</td><td><code class="code-inline">enabled</code></td></tr>
+              <tr><td>Compression</td><td>gzip enabled</td></tr>
+              <tr><td>Query parameters</td><td>Forward to origin + include in cache key</td></tr>
+              <tr><td>Age response header</td><td>Suppress or set to 0</td></tr>
+              <tr><td>Origin cache control</td><td>Honour origin Cache-Control headers</td></tr>
+            </table>
+          </div>
+        </li>
+        <li>
+          <div class="step-num">3</div>
+          <div class="step-content">
+            <strong>Adobe Managed CDN — DNS setup</strong>
+            <p>Set your DNS records as follows:</p>
+            <div class="code-block"># www subdomain — CNAME record
+www.yourdomain.com  CNAME  cdn.adobeaemcloud.com
+
+# Apex domain — A records (for automatic www redirect)
+yourdomain.com  A  151.101.3.10
+yourdomain.com  A  151.101.67.10
+yourdomain.com  A  151.101.131.10
+yourdomain.com  A  151.101.195.10</div>
+            <div class="callout info">
+              <span class="callout-icon">ℹ️</span>
+              <div>Lower your DNS TTL to 60–300 seconds a day before go-live to speed up the DNS cut-over. Restore it to 3600+ after go-live.</div>
+            </div>
+          </div>
+        </li>
+        <li>
+          <div class="step-num">4</div>
+          <div class="step-content">
+            <strong>Test the CDN in staging first</strong>
+            <p>Configure a staging/test domain pointing to your CDN before updating the production DNS. Verify all of the following on staging:</p>
+            <ul style="font-size:0.88rem;color:var(--color-text-muted);margin-left:16px;">
+              <li>www → apex redirect (or vice versa) works correctly</li>
+              <li>HTTPS certificate is valid</li>
+              <li>Page loads correctly and PSI score is still 100</li>
+              <li>Redirects from the spreadsheet still work</li>
+            </ul>
+          </div>
+        </li>
+        <li>
+          <div class="step-num">5</div>
+          <div class="step-content">
+            <strong>Validate with a PSI comparison</strong>
+            <p>After enabling the CDN, run PSI against both URLs and compare:</p>
+            <div class="code-block"># Direct .aem.live origin (reference)
+https://main--{repo}--{org}.aem.live/
+
+# Through your production CDN
+https://www.yourdomain.com/</div>
+            <p>A drop in score on the CDN URL vs. the origin URL signals CDN misconfiguration (HTTP/1.1, injected scripts, aggressive WAF rules, etc.).</p>
+          </div>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════
+       11. PUSH INVALIDATION
+  ══════════════════════════════════════════════════════════════ -->
+  <section class="section" id="push-invalidation">
+    <div class="section-header">
+      <div class="section-number">11</div>
+      <div>
+        <div class="section-title">Push Invalidation Setup</div>
+        <div class="section-subtitle">Ensure published content changes instantly appear on your production domain</div>
+      </div>
+    </div>
+    <div class="section-body">
+
+      <div class="callout info">
+        <span class="callout-icon">ℹ️</span>
+        <div>Push invalidation automatically purges your production CDN cache whenever a page is published on the <code class="code-inline">main</code> branch. Without it, visitors may see stale content for hours.</div>
+      </div>
+
+      <ol class="steps">
+        <li>
+          <div class="step-num">1</div>
+          <div class="step-content">
+            <strong>Understand how push invalidation works</strong>
+            <p>When an author publishes a page in AEM (via Sidekick), the following happens automatically:</p>
+            <ol style="font-size:0.88rem;color:var(--color-text-muted);margin-left:16px;">
+              <li>AEM pushes the change to <code class="code-inline">main--{repo}--{org}.aem.live</code></li>
+              <li>AEM sends a purge request to your registered CDN</li>
+              <li>The CDN evicts the stale cache entry for that URL</li>
+              <li>The next request to your production domain fetches the fresh content</li>
+            </ol>
+          </div>
+        </li>
+        <li>
+          <div class="step-num">2</div>
+          <div class="step-content">
+            <strong>Register your production CDN in the config service</strong>
+            <p>Select your CDN vendor and run the appropriate configuration command:</p>
+            <p><strong>Adobe Managed CDN:</strong></p>
+            <div class="code-block">curl --request POST \
+  --url https://admin.hlx.page/config/{org}/sites/{site}/cdn.json \
+  --header 'content-type: application/json' \
+  --header 'x-auth-token: &lt;your-auth-token&gt;' \
+  --data '{
+    "prod": {
+      "host": "www.yourdomain.com",
+      "type": "managed"
+    }
+  }'</div>
+            <p><strong>Cloudflare:</strong></p>
+            <div class="code-block">curl --request POST \
+  --url https://admin.hlx.page/config/{org}/sites/{site}/cdn.json \
+  --header 'content-type: application/json' \
+  --header 'x-auth-token: &lt;your-auth-token&gt;' \
+  --data '{
+    "prod": {
+      "host": "www.yourdomain.com",
+      "type": "cloudflare",
+      "cloudflare": {
+        "zoneId": "&lt;your-cloudflare-zone-id&gt;",
+        "apiToken": "&lt;your-cloudflare-purge-token&gt;"
+      }
+    }
+  }'</div>
+            <p>For <strong>Fastly</strong>, <strong>Akamai</strong>, and <strong>CloudFront</strong> — refer to the vendor-specific docs linked in the References section.</p>
+          </div>
+        </li>
+        <li>
+          <div class="step-num">3</div>
+          <div class="step-content">
+            <strong>Add the opt-in header to your CDN configuration</strong>
+            <p>Your CDN must send this header to the AEM origin to enable long cache TTLs and push invalidation:</p>
+            <div class="code-block">X-Push-Invalidation: enabled</div>
+            <p>Configure this as a request header forwarded from the CDN to the origin.</p>
+          </div>
+        </li>
+        <li>
+          <div class="step-num">4</div>
+          <div class="step-content">
+            <strong>Test push invalidation end-to-end</strong>
+            <ol style="font-size:0.88rem;color:var(--color-text-muted);margin-left:16px;">
+              <li>Make a small, visible change to a page (e.g., change a heading in SharePoint/Google Drive)</li>
+              <li>Use AEM Sidekick to <strong>Preview</strong> the change, then <strong>Publish</strong> it</li>
+              <li>Within 10–30 seconds, visit the production URL: <code class="code-inline">https://www.yourdomain.com/the-page</code></li>
+              <li>Confirm the change is visible</li>
+              <li>Check the response headers to confirm the cache was purged:</li>
+            </ol>
+            <div class="code-block">curl -I https://www.yourdomain.com/the-page
+# Look for: Age: 0 (fresh response, not from cache)
+# Or: X-Cache: MISS (cache was purged and refetched)</div>
+            <div class="screenshot">
+              <span class="icon">🔄</span>
+              <strong>Push Invalidation — Response Headers</strong>
+              Insert a screenshot of the curl -I output showing Age: 0 or X-Cache: MISS after publishing a change.
+            </div>
+          </div>
+        </li>
+        <li>
+          <div class="step-num">5</div>
+          <div class="step-content">
+            <strong>Troubleshoot if invalidation does not work</strong>
+            <table>
+              <tr><th>Symptom</th><th>Likely cause</th><th>Fix</th></tr>
+              <tr><td>Old content shown after publish</td><td>X-Push-Invalidation header not forwarded</td><td>Add header in CDN config</td></tr>
+              <tr><td>Purge requests failing</td><td>Invalid API token / wrong zone ID</td><td>Re-run the config POST with correct credentials</td></tr>
+              <tr><td>Invalidation not triggered</td><td>Origin URL does not start with <code class="code-inline">main--</code></td><td>Update CDN origin to <code class="code-inline">main--{repo}--{org}.aem.live</code></td></tr>
+            </table>
+          </div>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════
+       12. NOTIFY ADOBE
+  ══════════════════════════════════════════════════════════════ -->
+  <section class="section" id="notify">
+    <div class="section-header">
+      <div class="section-number">12</div>
+      <div>
+        <div class="section-title">Notify Adobe Engineering</div>
+        <div class="section-subtitle">Let the Edge Delivery Services team know your go-live date so they can monitor</div>
+      </div>
+    </div>
+    <div class="section-body">
+      <ol class="steps">
+        <li>
+          <div class="step-num">1</div>
+          <div class="step-content">
+            <strong>Send a go-live notification email</strong>
+            <p>Email <strong>aemgolives@adobe.com</strong> at least 48 hours before go-live. Include:</p>
+            <div class="code-block">To: aemgolives@adobe.com
+Subject: Go-Live Notification — www.yourdomain.com
+
+1. aem.live URL(s):       https://main--{repo}--{org}.aem.live/
+2. Production domain:     https://www.yourdomain.com
+3. Planned go-live:       YYYY-MM-DD HH:MM UTC
+4. Primary contact:       Name, email, phone
+5. Teams/Slack channel:   #your-project-channel</div>
+          </div>
+        </li>
+        <li>
+          <div class="step-num">2</div>
+          <div class="step-content">
+            <strong>Set up a Teams or Slack collaboration channel</strong>
+            <p>If you do not already have a channel with the Adobe EDS team, refer to the <a href="https://www.aem.live/docs/teams-collaboration" target="_blank">Teams Collaboration guide</a> to create one. This is used for real-time support during go-live.</p>
+          </div>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- ── Final Checklist Summary ─────────────────────────────── -->
+  <div class="toc-card" style="margin-top:40px;">
+    <h2>Final Pre Go-Live Checklist — Quick Reference</h2>
+    <ul class="checklist">
+      <li><span class="check">☐</span> Content &amp; design reviewed on preview URL — no visual regressions</li>
+      <li><span class="check">☐</span> Lighthouse score 100 on Mobile AND Desktop (Google PageSpeed Insights)</li>
+      <li><span class="check">☐</span> Analytics tracking confirmed firing on preview environment</li>
+      <li><span class="check">☐</span> Analytics team briefed on expected baseline changes</li>
+      <li><span class="check">☐</span> OpTel / RUM active on the existing site for baseline capture</li>
+      <li><span class="check">☐</span> Redirects spreadsheet populated and tested (all return HTTP 301)</li>
+      <li><span class="check">☐</span> sitemap.xml verified — all live pages listed, noindex pages excluded</li>
+      <li><span class="check">☐</span> robots.txt configured and verified — Sitemap line present</li>
+      <li><span class="check">☐</span> All canonical URLs return HTTP 200 — no 3xx / 4xx</li>
+      <li><span class="check">☐</span> Favicon committed and visible in browser tab</li>
+      <li><span class="check">☐</span> Author authentication configured (or deliberately left open)</li>
+      <li><span class="check">☐</span> CDN tested in staging — PSI score stable</li>
+      <li><span class="check">☐</span> Push invalidation configured and end-to-end tested</li>
+      <li><span class="check">☐</span> Adobe engineering notified via aemgolives@adobe.com</li>
+    </ul>
+  </div>
+
+  <!-- ── References ─────────────────────────────────────────── -->
+  <div class="references">
+    <h2>References &amp; Source of Truth</h2>
+    <div class="ref-grid">
+      <a class="ref-card" href="https://www.aem.live/docs/go-live-checklist" target="_blank">
+        <div class="ref-tag">Official</div>
+        <div class="ref-title">Go-Live Checklist</div>
+        <div class="ref-url">www.aem.live/docs/go-live-checklist</div>
+      </a>
+      <a class="ref-card" href="https://www.aem.live/developer/keeping-it-100" target="_blank">
+        <div class="ref-tag">Performance</div>
+        <div class="ref-title">Keeping Your Lighthouse Score 100</div>
+        <div class="ref-url">www.aem.live/developer/keeping-it-100</div>
+      </a>
+      <a class="ref-card" href="https://pagespeed.web.dev/" target="_blank">
+        <div class="ref-tag">Tool</div>
+        <div class="ref-title">Google PageSpeed Insights</div>
+        <div class="ref-url">pagespeed.web.dev</div>
+      </a>
+      <a class="ref-card" href="https://www.aem.live/docs/redirects" target="_blank">
+        <div class="ref-tag">Redirects</div>
+        <div class="ref-title">Redirects Documentation</div>
+        <div class="ref-url">www.aem.live/docs/redirects</div>
+      </a>
+      <a class="ref-card" href="https://www.aem.live/developer/indexing" target="_blank">
+        <div class="ref-tag">Sitemap</div>
+        <div class="ref-title">Indexing &amp; Query Index</div>
+        <div class="ref-url">www.aem.live/developer/indexing</div>
+      </a>
+      <a class="ref-card" href="https://www.aem.live/docs/seo-geo" target="_blank">
+        <div class="ref-tag">SEO</div>
+        <div class="ref-title">SEO &amp; GEO Best Practices</div>
+        <div class="ref-url">www.aem.live/docs/seo-geo</div>
+      </a>
+      <a class="ref-card" href="https://www.aem.live/docs/authentication-setup-authoring" target="_blank">
+        <div class="ref-tag">Auth</div>
+        <div class="ref-title">Configuring Authentication for Authors</div>
+        <div class="ref-url">www.aem.live/docs/authentication-setup-authoring</div>
+      </a>
+      <a class="ref-card" href="https://www.aem.live/docs/byo-cdn-setup" target="_blank">
+        <div class="ref-tag">CDN</div>
+        <div class="ref-title">BYO CDN Setup</div>
+        <div class="ref-url">www.aem.live/docs/byo-cdn-setup</div>
+      </a>
+      <a class="ref-card" href="https://www.aem.live/docs/byo-cdn-adobe-managed" target="_blank">
+        <div class="ref-tag">CDN</div>
+        <div class="ref-title">Adobe Managed CDN</div>
+        <div class="ref-url">www.aem.live/docs/byo-cdn-adobe-managed</div>
+      </a>
+      <a class="ref-card" href="https://www.aem.live/docs/setup-byo-cdn-push-invalidation" target="_blank">
+        <div class="ref-tag">CDN</div>
+        <div class="ref-title">Configuring Push Invalidation (BYO CDN)</div>
+        <div class="ref-url">www.aem.live/docs/setup-byo-cdn-push-invalidation</div>
+      </a>
+      <a class="ref-card" href="https://www.aem.live/docs/setup-byo-cdn-push-invalidation-for-cloudflare" target="_blank">
+        <div class="ref-tag">CDN</div>
+        <div class="ref-title">Push Invalidation — Cloudflare</div>
+        <div class="ref-url">www.aem.live/docs/setup-byo-cdn-push-invalidation-for-cloudflare</div>
+      </a>
+      <a class="ref-card" href="https://www.aem.live/docs/setup-byo-cdn-push-invalidation-for-cloudfront" target="_blank">
+        <div class="ref-tag">CDN</div>
+        <div class="ref-title">Push Invalidation — CloudFront</div>
+        <div class="ref-url">www.aem.live/docs/setup-byo-cdn-push-invalidation-for-cloudfront</div>
+      </a>
+      <a class="ref-card" href="https://www.aem.live/docs/setup-byo-cdn-push-invalidation-for-akamai" target="_blank">
+        <div class="ref-tag">CDN</div>
+        <div class="ref-title">Push Invalidation — Akamai</div>
+        <div class="ref-url">www.aem.live/docs/setup-byo-cdn-push-invalidation-for-akamai</div>
+      </a>
+      <a class="ref-card" href="https://search.google.com/search-console" target="_blank">
+        <div class="ref-tag">Tool</div>
+        <div class="ref-title">Google Search Console</div>
+        <div class="ref-url">search.google.com/search-console</div>
+      </a>
+    </div>
+  </div>
+
+</div><!-- /container -->
+
+<footer class="doc-footer">
+  AEM Edge Delivery Services — Pre Go-Live Checklist &nbsp;|&nbsp; Source of truth: <a href="https://www.aem.live/docs/go-live-checklist" target="_blank">www.aem.live/docs/go-live-checklist</a>
+</footer>
+
+</body>
+</html>

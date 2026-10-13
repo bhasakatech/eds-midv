@@ -30,6 +30,22 @@ export function moveAttributes(from, to, attributes) {
   });
 }
 
+export async function fetchPlaceholdersWithContext() {
+  const placeholdersUrl = new URL('/placeholders.json', window.location.origin);
+
+  const res = await fetch(placeholdersUrl);
+  const { data } = await res.json();
+
+  const map = {};
+
+  data.forEach((row) => {
+    const mapKey = row.Text ? `${row.Key}:${row.Text}` : row.Key;
+    map[mapKey] = row;
+  });
+
+  return map;
+}
+
 /**
  * Move instrumentation attributes from a given element to another given element.
  * @param {Element} from the element to copy attributes from
@@ -56,6 +72,17 @@ async function loadFonts() {
     // do nothing
   }
 }
+
+function setSiteIdentifier() {
+  const { hostname } = window.location;
+  const [, site] = hostname.match(/^.*?--(.+?)--[^.]+\.aem\./) || [];
+
+  if (site && document.body) {
+    document.body.dataset.site = site;
+  }
+}
+
+setSiteIdentifier();
 
 /**
  * Builds all synthetic blocks in a container element.

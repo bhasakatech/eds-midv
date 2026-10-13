@@ -1,0 +1,1205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AEM EDS — Post Go-Live Checklist</title>
+  <style>
+    :root {
+      --color-primary: #2d9d78;
+      --color-primary-dark: #268e6c;
+      --color-blue: #1473e6;
+      --color-warning: #e68619;
+      --color-danger: #e34850;
+      --color-info: #2680eb;
+      --color-bg: #f8f9fa;
+      --color-card: #ffffff;
+      --color-border: #e1e4e8;
+      --color-text: #1b1f23;
+      --color-text-muted: #586069;
+      --color-code-bg: #f3f4f6;
+      --radius: 8px;
+      --shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      font-size: 15px;
+      line-height: 1.7;
+      color: var(--color-text);
+      background: var(--color-bg);
+    }
+
+    /* ── Header ─────────────────────────────────────────────── */
+    .doc-header {
+      background: linear-gradient(135deg, #1a7f5e 0%, #2d9d78 60%, #40b08a 100%);
+      color: #fff;
+      padding: 48px 32px 40px;
+    }
+    .doc-header .badge {
+      display: inline-block;
+      background: rgba(255,255,255,0.2);
+      border: 1px solid rgba(255,255,255,0.4);
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 4px 14px;
+      margin-bottom: 16px;
+    }
+    .doc-header h1 { font-size: 2.2rem; font-weight: 700; margin-bottom: 10px; }
+    .doc-header p  { font-size: 1.05rem; opacity: 0.9; max-width: 680px; }
+    .doc-header .companion {
+      margin-top: 20px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(0,0,0,0.15);
+      border-radius: 6px;
+      padding: 8px 16px;
+      font-size: 0.88rem;
+    }
+    .doc-header .companion a { color: #fff; }
+
+    /* ── Layout ──────────────────────────────────────────────── */
+    .container { max-width: 960px; margin: 0 auto; padding: 40px 24px 80px; }
+
+    .toc-card {
+      background: var(--color-card);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius);
+      padding: 24px 28px;
+      margin-bottom: 40px;
+      box-shadow: var(--shadow);
+    }
+    .toc-card h2 { font-size: 1rem; font-weight: 700; margin-bottom: 14px; color: var(--color-text-muted); text-transform: uppercase; letter-spacing: 0.05em; }
+    .toc-card ol { padding-left: 20px; }
+    .toc-card li { margin-bottom: 6px; }
+    .toc-card a  { color: var(--color-primary); text-decoration: none; font-weight: 500; }
+    .toc-card a:hover { text-decoration: underline; }
+
+    /* ── Timeline intro ──────────────────────────────────────── */
+    .timeline {
+      display: flex;
+      gap: 0;
+      margin-bottom: 40px;
+      overflow-x: auto;
+    }
+    .timeline-item {
+      flex: 1;
+      min-width: 160px;
+      background: var(--color-card);
+      border: 1px solid var(--color-border);
+      border-right: none;
+      padding: 16px 18px;
+      position: relative;
+    }
+    .timeline-item:first-child { border-radius: 8px 0 0 8px; }
+    .timeline-item:last-child  { border-right: 1px solid var(--color-border); border-radius: 0 8px 8px 0; }
+    .timeline-item .tl-when { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: var(--color-primary); margin-bottom: 4px; }
+    .timeline-item .tl-what { font-size: 0.88rem; font-weight: 600; }
+
+    /* ── Sections ────────────────────────────────────────────── */
+    .section {
+      background: var(--color-card);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius);
+      margin-bottom: 32px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 18px 24px;
+      border-bottom: 1px solid var(--color-border);
+      background: #fafbfc;
+    }
+    .section-number {
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      background: var(--color-primary);
+      color: #fff;
+      font-weight: 700;
+      font-size: 14px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .section-title { font-size: 1.15rem; font-weight: 700; }
+    .section-subtitle { font-size: 0.85rem; color: var(--color-text-muted); margin-top: 2px; }
+    .section-tag {
+      margin-left: auto;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      padding: 3px 10px;
+      border-radius: 20px;
+      flex-shrink: 0;
+    }
+    .tag-immediate { background: #ffeef0; color: var(--color-danger); }
+    .tag-week1     { background: #fff4e5; color: var(--color-warning); }
+    .tag-ongoing   { background: #e8f7f2; color: var(--color-primary); }
+
+    .section-body { padding: 24px; }
+
+    /* ── Steps ───────────────────────────────────────────────── */
+    .steps { list-style: none; counter-reset: step-counter; }
+    .steps li {
+      counter-increment: step-counter;
+      display: flex;
+      gap: 14px;
+      padding: 14px 0;
+      border-bottom: 1px solid #f0f1f3;
+    }
+    .steps li:last-child { border-bottom: none; padding-bottom: 0; }
+    .step-num {
+      width: 28px; height: 28px;
+      background: #e8f7f2;
+      color: var(--color-primary);
+      border-radius: 50%;
+      font-size: 12px;
+      font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+    .step-content { flex: 1; }
+    .step-content strong { display: block; margin-bottom: 4px; font-size: 0.95rem; }
+    .step-content p { color: var(--color-text-muted); font-size: 0.9rem; margin-bottom: 6px; }
+
+    /* ── Code blocks ─────────────────────────────────────────── */
+    .code-block {
+      background: #1b1f23;
+      color: #e1e4e8;
+      border-radius: 6px;
+      padding: 14px 16px;
+      font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+      font-size: 13px;
+      line-height: 1.6;
+      overflow-x: auto;
+      margin: 8px 0;
+    }
+    .code-inline {
+      background: var(--color-code-bg);
+      border: 1px solid var(--color-border);
+      border-radius: 4px;
+      padding: 1px 6px;
+      font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+      font-size: 12.5px;
+      color: #d73a49;
+    }
+
+    /* ── Callouts ────────────────────────────────────────────── */
+    .callout {
+      display: flex;
+      gap: 12px;
+      padding: 14px 16px;
+      border-radius: 6px;
+      margin: 12px 0;
+      font-size: 0.9rem;
+    }
+    .callout-icon { font-size: 1.1rem; flex-shrink: 0; line-height: 1.5; }
+    .callout.info    { background: #eaf2ff; border-left: 4px solid var(--color-blue); }
+    .callout.warning { background: #fff4e5; border-left: 4px solid var(--color-warning); }
+    .callout.success { background: #e8f7f2; border-left: 4px solid var(--color-primary); }
+    .callout.danger  { background: #ffeef0; border-left: 4px solid var(--color-danger); }
+
+    /* ── Table ───────────────────────────────────────────────── */
+    table { width: 100%; border-collapse: collapse; font-size: 0.9rem; margin: 12px 0; }
+    th { background: #f3f4f6; font-weight: 700; text-align: left; padding: 10px 14px; border: 1px solid var(--color-border); }
+    td { padding: 9px 14px; border: 1px solid var(--color-border); vertical-align: top; }
+    tr:nth-child(even) td { background: #fafbfc; }
+
+    /* ── Screenshot placeholder ──────────────────────────────── */
+    .screenshot {
+      border: 2px dashed #c8d0da;
+      border-radius: 8px;
+      background: #f5f7fa;
+      padding: 28px 20px;
+      text-align: center;
+      color: var(--color-text-muted);
+      font-size: 0.85rem;
+      margin: 12px 0;
+    }
+    .screenshot .icon { font-size: 2.2rem; display: block; margin-bottom: 6px; }
+    .screenshot strong { display: block; font-size: 0.95rem; color: var(--color-text); margin-bottom: 4px; }
+
+    /* ── Metric cards ────────────────────────────────────────── */
+    .metric-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; margin: 12px 0; }
+    .metric-card {
+      border: 1px solid var(--color-border);
+      border-radius: 6px;
+      padding: 16px;
+      text-align: center;
+    }
+    .metric-card .metric-icon { font-size: 1.8rem; display: block; margin-bottom: 6px; }
+    .metric-card .metric-name { font-size: 0.8rem; color: var(--color-text-muted); text-transform: uppercase; letter-spacing: 0.06em; font-weight: 600; }
+    .metric-card .metric-target { font-size: 1.1rem; font-weight: 700; color: var(--color-primary); margin-top: 4px; }
+    .metric-card .metric-desc { font-size: 0.8rem; color: var(--color-text-muted); margin-top: 4px; }
+
+    /* ── Checklist boxes ─────────────────────────────────────── */
+    .checklist { list-style: none; }
+    .checklist li {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 8px 0;
+      font-size: 0.9rem;
+      border-bottom: 1px dashed #eee;
+    }
+    .checklist li:last-child { border-bottom: none; }
+    .checklist .check { font-size: 1rem; flex-shrink: 0; }
+
+    /* ── References ──────────────────────────────────────────── */
+    .references {
+      background: var(--color-card);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius);
+      padding: 28px;
+      box-shadow: var(--shadow);
+      margin-top: 40px;
+    }
+    .references h2 { font-size: 1.1rem; font-weight: 700; margin-bottom: 18px; }
+    .ref-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; }
+    .ref-card {
+      border: 1px solid var(--color-border);
+      border-radius: 6px;
+      padding: 14px 16px;
+      text-decoration: none;
+      color: var(--color-text);
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+    .ref-card:hover { border-color: var(--color-primary); box-shadow: 0 0 0 3px rgba(45,157,120,0.1); }
+    .ref-card .ref-tag { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--color-primary); margin-bottom: 4px; }
+    .ref-card .ref-title { font-weight: 600; font-size: 0.9rem; }
+    .ref-card .ref-url  { font-size: 0.78rem; color: var(--color-text-muted); margin-top: 2px; word-break: break-all; }
+
+    /* ── Footer ──────────────────────────────────────────────── */
+    .doc-footer {
+      text-align: center;
+      padding: 28px;
+      font-size: 0.85rem;
+      color: var(--color-text-muted);
+      border-top: 1px solid var(--color-border);
+      margin-top: 48px;
+    }
+
+    @media (min-width: 600px) {
+      .doc-header { padding: 56px 48px 48px; }
+      .doc-header h1 { font-size: 2.6rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!--  HEADER                                                     -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<header class="doc-header">
+  <span class="badge">AEM Edge Delivery Services</span>
+  <h1>Post Go-Live Checklist</h1>
+  <p>Everything you need to validate, monitor, and stabilise your AEM EDS site in the hours, days, and weeks after your production launch. Work through these checks in order — the sooner you catch an issue, the less impact it has.</p>
+  <div class="companion">
+    📋 Companion document: <a href="./pre-go-live-checklist.html">Pre Go-Live Checklist</a>
+  </div>
+</header>
+
+<div class="container">
+
+  <!-- ── When to do what ───────────────────────────────────── -->
+  <div class="timeline">
+    <div class="timeline-item">
+      <div class="tl-when">Immediately</div>
+      <div class="tl-what">Performance on production CDN</div>
+    </div>
+    <div class="timeline-item">
+      <div class="tl-when">Within 1 hour</div>
+      <div class="tl-what">Martech &amp; analytics validation</div>
+    </div>
+    <div class="timeline-item">
+      <div class="tl-when">Day 1</div>
+      <div class="tl-what">404 monitoring set up, Search Console submitted</div>
+    </div>
+    <div class="timeline-item">
+      <div class="tl-when">Week 1</div>
+      <div class="tl-what">Indexing confirmed, CWV field data reviewed</div>
+    </div>
+    <div class="timeline-item">
+      <div class="tl-when">Ongoing</div>
+      <div class="tl-what">Monitor GSC, 404s, RUM dashboard</div>
+    </div>
+  </div>
+
+  <!-- ── Table of Contents ─────────────────────────────────── -->
+  <div class="toc-card">
+    <h2>Table of Contents</h2>
+    <ol>
+      <li><a href="#perf-prod">Performance Validation on Production CDN</a></li>
+      <li><a href="#martech-post">Martech &amp; Analytics Validation on Production</a></li>
+      <li><a href="#gsc">Google Search Console — Setup &amp; Monitoring</a></li>
+      <li><a href="#404-report">404 Report — Find &amp; Fix Broken URLs</a></li>
+      <li><a href="#cwv-field">Core Web Vitals Field Data (RUM)</a></li>
+      <li><a href="#indexing">Verify Search Engine Indexing</a></li>
+      <li><a href="#push-test">Re-test Push Invalidation on Production</a></li>
+      <li><a href="#ongoing">Ongoing Monitoring Schedule</a></li>
+    </ol>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════
+       1. PERFORMANCE ON PRODUCTION CDN
+  ══════════════════════════════════════════════════════════════ -->
+  <section class="section" id="perf-prod">
+    <div class="section-header">
+      <div class="section-number">1</div>
+      <div>
+        <div class="section-title">Performance Validation on Production CDN</div>
+        <div class="section-subtitle">Re-run Lighthouse immediately after DNS cutover — CDN layers can hurt scores</div>
+      </div>
+      <span class="section-tag tag-immediate">Immediate</span>
+    </div>
+    <div class="section-body">
+
+      <div class="callout danger">
+        <span class="callout-icon">🚨</span>
+        <div><strong>Do not assume the pre-live score carries over.</strong> Introducing a CDN between the visitor and your <code class="code-inline">.aem.live</code> origin can drop your Lighthouse score significantly due to HTTP/1.1, injected scripts, or misconfigured caching. You must re-test on the production domain immediately after go-live.</div>
+      </div>
+
+      <ol class="steps">
+        <li>
+          <div class="step-num">1</div>
+          <div class="step-content">
+            <strong>Run PageSpeed Insights on the PRODUCTION domain — Mobile</strong>
+            <p>Open <a href="https://pagespeed.web.dev/" target="_blank">pagespeed.web.dev</a> and test your live URL:</p>
+            <div class="code-block">https://www.yourdomain.com/          ← test this
+https://main--{repo}--{org}.aem.live/ ← compare against this</div>
+            <p>Both should score 100. If the production domain scores lower, the gap is caused by the CDN layer.</p>
+            <div class="screenshot">
+              <span class="icon">📊</span>
+              <strong>PSI — Production Domain vs .aem.live Origin Comparison</strong>
+              Insert side-by-side screenshots of PSI results for your production domain and the .aem.live origin. Any score difference highlights CDN-related issues.
+            </div>
+          </div>
+        </li>
+        <li>
+          <div class="step-num">2</div>
+          <div class="step-content">
+            <strong>Run PageSpeed Insights — Desktop</strong>
+            <p>Repeat the comparison on the Desktop tab.</p>
+          </div>
+        </li>
+        <li>
+          <div class="step-num">3</div>
+          <div class="step-content">
+            <strong>Diagnose CDN performance issues</strong>
+            <p>If the production CDN score is lower than the <code class="code-inline">.aem.live</code> origin, check for these common causes:</p>
+            <table>
+              <tr><th>Symptom in PSI</th><th>Likely CDN cause</th><th>Fix</th></tr>
+              <tr>
+                <td>High TTFB (Time to First Byte)</td>
+                <td>CDN running HTTP/1.1 to origin instead of HTTP/2</td>
+                <td>Enable HTTP/2 or HTTP/3 on the CDN-to-origin connection</td>
+              </tr>
+              <tr>
+                <td>Extra blocking scripts</td>
+                <td>CDN is injecting JS (bot detection, analytics SDKs, RUM)</td>
+                <td>Disable or move CDN-injected scripts; ensure they don't run before LCP</td>
+              </tr>
+              <tr>
+                <td>Cache MISS on every request</td>
+                <td>CDN not honouring origin Cache-Control headers</td>
+                <td>Enable "respect origin cache headers" in CDN config</td>
+              </tr>
+              <tr>
+                <td>Large render-blocking requests</td>
+                <td>WAF or DDoS tools adding latency</td>
+                <td>Tune WAF rules; test by temporarily disabling and re-measuring</td>
+              </tr>
+              <tr>
+                <td>Redirect chain on first load</td>
+                <td>www → apex or HTTP → HTTPS redirect not handled at CDN edge</td>
+                <td>Resolve redirects at CDN edge (not at origin) to avoid extra round-trips</td>
+              </tr>
+            </table>
+          </div>
+        </li>
+        <li>
+          <div class="step-num">4</div>
+          <div class="step-content">
+            <strong>Validate CDN response headers</strong>
+            <p>Check that the CDN is not suppressing or overriding important headers:</p>
+            <div class="code-block">curl -I https://www.yourdomain.com/
+
+# Expected headers:
+# content-type: text/html; charset=utf-8
+# cache-control: max-age=3600       ← origin TTL respected
+# x-push-invalidation: enabled      ← opt-in header present
+# age: 0                             ← or a small positive number</div>
+            <div class="screenshot">
+              <span class="icon">🔍</span>
+              <strong>curl -I Response Headers — Production Domain</strong>
+              Insert a screenshot of the curl -I output for your production domain. Highlight cache-control and age headers.
+            </div>
+          </div>
+        </li>
+        <li>
+          <div class="step-num">5</div>
+          <div class="step-content">
+            <strong>Check HTTP protocol version</strong>
+            <div class="code-block">curl -I --http2 https://www.yourdomain.com/
+# First line should read: HTTP/2 200
+# If you see HTTP/1.1 200 — upgrade the CDN connection protocol</div>
+          </div>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════
+       2. MARTECH & ANALYTICS ON PRODUCTION
+  ══════════════════════════════════════════════════════════════ -->
+  <section class="section" id="martech-post">
+    <div class="section-header">
+      <div class="section-number">2</div>
+      <div>
+        <div class="section-title">Martech &amp; Analytics Validation on Production</div>
+        <div class="section-subtitle">Confirm all tags fire correctly under the production hostname</div>
+      </div>
+      <span class="section-tag tag-immediate">Within 1 hour</span>
+    </div>
+    <div class="section-body">
+
+      <div class="callout warning">
+        <span class="callout-icon">⚠️</span>
+        <div>Many martech tags are <strong>hostname-restricted</strong> — they work on <code class="code-inline">staging.yourdomain.com</code> but not <code class="code-inline">www.yourdomain.com</code>, or vice versa. Production is the first time the real hostname is used, so test thoroughly.</div>
+      </div>
+
+      <ol class="steps">
+        <li>
+          <div class="step-num">1</div>
+          <div class="step-content">
+            <strong>Verify analytics hits on the production hostname</strong>
+            <p>Open your analytics platform (Google Analytics 4, Adobe Analytics, etc.) real-time report. Browse 3–5 pages on <code class="code-inline">https://www.yourdomain.com/</code> and confirm:</p>
+            <ul style="font-size:0.88rem;color:var(--color-text-muted);margin-left:16px;">
+              <li>Pageviews appear in the real-time dashboard</li>
+              <li>The hostname shows as <code class="code-inline">www.yourdomain.com</code>, not <code class="code-inline">main--{repo}--{org}.aem.live</code></li>
+              <li>Events (clicks, scrolls, conversions) fire as expected</li>
+            </ul>
+            <div class="screenshot">
+              <span class="icon">📈</span>
+              <strong>Analytics Real-Time Dashboard — Post Go-Live</strong>
+              Insert a screenshot of your analytics real-time view showing active users on the production domain.
+            </div>
+          </div>
+        </li>
+        <li>
+          <div class="step-num">2</div>
+          <div class="step-content">
+            <strong>Use Chrome DevTools Network tab to confirm tag firing</strong>
+            <p>Open DevTools (<code class="code-inline">F12</code>) → Network tab → filter by your analytics domain. Load several pages and confirm network requests are sent:</p>
+            <div class="screenshot">
+              <span class="icon">🌐</span>
+              <strong>DevTools Network — Analytics Requests on Production</strong>
+              Insert a screenshot showing analytics/tag requests in the Network tab. Filter by "collect", "beacon", or your analytics domain name.
+            </div>
+          </div>
+        </li>
+        <li>
+          <div class="step-num">3</div>
+          <div class="step-content">
+            <strong>Check tag manager rules use correct hostname</strong>
+            <p>Open your tag manager (GTM, Adobe Launch, Tealium). Check that all publish rules and triggers that reference a hostname or domain are updated to match the production domain:</p>
+            <div class="code-block"># Bad — domain-specific rule that might not fire on production
+Condition: hostname equals "staging.yourdomain.com"
+
+# Good — use a condition that matches all valid hostnames
+Condition: hostname contains "yourdomain.com"</div>
+          </div>
+        </li>
+        <li>
+          <div class="step-num">4</div>
+          <div class="step-content">
+            <strong>Validate consent management</strong>
+            <p>If you have a cookie consent banner (OneTrust, Cookiebot, etc.), confirm it:</p>
+            <ul style="font-size:0.88rem;color:var(--color-text-muted);margin-left:16px;">
+              <li>Appears on first visit in all regions where required (e.g., EU/GDPR)</li>
+              <li>Blocks analytics and tracking until consent is given</li>
+              <li>After consent is given, <code class="code-inline">delayed.js</code> loads the analytics scripts correctly</li>
+            </ul>
+          </div>
+        </li>
+        <li>
+          <div class="step-num">5</div>
+          <div class="step-content">
+            <strong>Test bottom-of-funnel conversion events</strong>
+            <p>Submit a test form, complete a test transaction, or trigger a key conversion event. Verify it appears in the backend system (CRM, order management, etc.) and in analytics. These events are not affected by the loading sequence change and should remain flat.</p>
+          </div>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════
+       3. GOOGLE SEARCH CONSOLE
+  ══════════════════════════════════════════════════════════════ -->
+  <section class="section" id="gsc">
+    <div class="section-header">
+      <div class="section-number">3</div>
+      <div>
+        <div class="section-title">Google Search Console — Setup &amp; Monitoring</div>
+        <div class="section-subtitle">Submit your sitemap, request indexing, and monitor crawl health</div>
+      </div>
+      <span class="section-tag tag-week1">Day 1 onwards</span>
+    </div>
+    <div class="section-body">
+      <ol class="steps">
+        <li>
+          <div class="step-num">1</div>
+          <div class="step-content">
+            <strong>Verify domain ownership in Search Console</strong>
+            <p>Go to <a href="https://search.google.com/search-console" target="_blank">Google Search Console</a> → Add property → choose <strong>Domain</strong> (recommended, covers all subdomains and protocols).</p>
+            <p>Verify via DNS TXT record — add the record your DNS provider:</p>
+            <div class="code-block">Type: TXT
+Name: @  (or yourdomain.com)
+Value: google-site-verification=XXXXXXXXXXXXX</div>
+            <div class="screenshot">
+              <span class="icon">🔑</span>
+              <strong>Google Search Console — Domain Verification</strong>
+              Insert a screenshot of the Search Console domain verification step. After adding the DNS TXT record, click Verify.
+            </div>
+          </div>
+        </li>
+        <li>
+          <div class="step-num">2</div>
+          <div class="step-content">
+            <strong>Submit your sitemap</strong>
+            <p>In Search Console → <strong>Sitemaps</strong> → add your sitemap URL:</p>
+            <div class="code-block">https://www.yourdomain.com/sitemap.xml</div>
+            <p>Click <strong>Submit</strong>. The status will initially show as <em>Pending</em> — Google typically processes new sitemaps within 24–48 hours.</p>
+            <div class="screenshot">
+              <span class="icon">🗺️</span>
+              <strong>Search Console — Sitemaps Section</strong>
+              Insert a screenshot of the Sitemaps section in Search Console. After submission, it should show the sitemap URL with status "Success" and a count of discovered URLs.
+            </div>
+          </div>
+        </li>
+        <li>
+          <div class="step-num">3</div>
+          <div class="step-content">
+            <strong>Request indexing for your most important pages</strong>
+            <p>In Search Console → use the <strong>URL Inspection</strong> tool. Enter your homepage URL, click <strong>Request Indexing</strong>. Repeat for your 5–10 most important pages (home, key product/service pages, contact).</p>
+            <div class="screenshot">
+              <span class="icon">🔎</span>
+              <strong>URL Inspection Tool — Request Indexing</strong>
+              Insert a screenshot of the URL Inspection tool showing "URL is on Google" or the Request Indexing button.
+            </div>
+          </div>
+        </li>
+        <li>
+          <div class="step-num">4</div>
+          <div class="step-content">
+            <strong>Monitor key Search Console reports (Week 1+)</strong>
+            <table>
+              <tr><th>Report</th><th>Where to find it</th><th>What to check</th></tr>
+              <tr>
+                <td>Coverage / Indexing</td>
+                <td>Indexing → Pages</td>
+                <td>Confirm pages are indexed. Fix any "Crawled - not indexed" or "Soft 404" issues.</td>
+              </tr>
+              <tr>
+                <td>Performance</td>
+                <td>Search results</td>
+                <td>Monitor total clicks and impressions. Expect a dip during re-indexing, then recovery.</td>
+              </tr>
+              <tr>
+                <td>Core Web Vitals</td>
+                <td>Experience → Core Web Vitals</td>
+                <td>Confirm all URLs are in "Good" range once field data accumulates (takes 28 days).</td>
+              </tr>
+              <tr>
+                <td>Links</td>
+                <td>Links → Top linked pages</td>
+                <td>Verify important backlinks still resolve correctly (no 404s).</td>
+              </tr>
+              <tr>
+                <td>Crawl stats</td>
+                <td>Settings → Crawl stats</td>
+                <td>Check for crawl errors or Googlebot being blocked.</td>
+              </tr>
+            </table>
+            <div class="screenshot">
+              <span class="icon">📉</span>
+              <strong>Search Console — Performance Report</strong>
+              Insert a screenshot of the Search Console Performance report. Monitor total clicks and impressions trend over the first 4 weeks post go-live.
+            </div>
+          </div>
+        </li>
+        <li>
+          <div class="step-num">5</div>
+          <div class="step-content">
+            <strong>Check for crawl errors</strong>
+            <p>Go to Search Console → <strong>Settings → Crawl stats</strong>. Review the "Crawl requests breakdown" for any spikes in 404s or server errors in the days after launch.</p>
+            <div class="screenshot">
+              <span class="icon">🕷️</span>
+              <strong>Search Console — Crawl Stats</strong>
+              Insert a screenshot of the Crawl Stats page. Look for any response code other than 200 in the breakdown chart.
+            </div>
+          </div>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════
+       4. 404 REPORT
+  ══════════════════════════════════════════════════════════════ -->
+  <section class="section" id="404-report">
+    <div class="section-header">
+      <div class="section-number">4</div>
+      <div>
+        <div class="section-title">404 Report — Find &amp; Fix Broken URLs</div>
+        <div class="section-subtitle">After migration there will always be 404s. Catch them fast and redirect.</div>
+      </div>
+      <span class="section-tag tag-week1">Day 1 onwards</span>
+    </div>
+    <div class="section-body">
+
+      <div class="callout info">
+        <span class="callout-icon">ℹ️</span>
+        <div>404s are inevitable after a site migration. The goal is not zero 404s on day one — it is fast detection and rapid redirection so users (and search engines) are not left stranded.</div>
+      </div>
+
+      <ol class="steps">
+        <li>
+          <div class="step-num">1</div>
+          <div class="step-content">
+            <strong>Source 1: Operational Telemetry (RUM) / AEM Slack Bot</strong>
+            <p>AEM's built-in RUM automatically tracks 404 events from real visitors. Your project's Slack bot (if configured) sends regular 404 reports. Check your project Slack channel for messages like:</p>
+            <div class="code-block"># Example Slack bot 404 report
+404 Not Found report for www.yourdomain.com (last 24h):
+  /old-product-page     →  142 hits
+  /legacy/category/item →   87 hits
+  /images/old-banner.jpg →  34 hits</div>
+            <p>These are your highest-priority redirects to add to the redirects spreadsheet.</p>
+          </div>
+        </li>
+        <li>
+          <div class="step-num">2</div>
+          <div class="step-content">
+            <strong>Source 2: Google Analytics — 404 page report</strong>
+            <p>In GA4, create a custom report or use Explore to find pages with the page title matching your 404 page title:</p>
+            <div class="code-block"># GA4 Explore — Free form report
+Dimension: Page title      → filter: contains "404" or "Not Found"
+Dimension: Page path
+Metric:    Views
+Date range: Last 7 days</div>
+            <div class="screenshot">
+              <span class="icon">🔴</span>
+              <strong>GA4 — 404 Page Report</strong>
+              Insert a screenshot of the GA4 Explore or custom report showing 404 page paths sorted by view count. These are the URLs you need to redirect.
+            </div>
+          </div>
+        </li>
+        <li>
+          <div class="step-num">3</div>
+          <div class="step-content">
+            <strong>Source 3: Google Search Console — Not Found errors</strong>
+            <p>In Search Console → <strong>Indexing → Pages</strong> → filter by <strong>"Not found (404)"</strong>. This shows URLs Google has tried to crawl but received a 404 response for.</p>
+            <div class="screenshot">
+              <span class="icon">🚫</span>
+              <strong>Search Console — Not Found (404) Pages</strong>
+              Insert a screenshot of the Search Console Pages report filtered to "Not found (404)". Export the list and add the high-traffic URLs to your redirects spreadsheet.
+            </div>
+          </div>
+        </li>
+        <li>
+          <div class="step-num">4</div>
+          <div class="step-content">
+            <strong>Add missing redirects to the redirects spreadsheet</strong>
+            <p>For each high-traffic 404, determine the best redirect target and add a row to <code class="code-inline">redirects.xlsx</code> (or Google Drive redirects sheet):</p>
+            <table>
+              <tr><th>Source (404 path)</th><th>Destination (new URL)</th></tr>
+              <tr><td>/old-product-page</td><td>/products/new-product-name</td></tr>
+              <tr><td>/legacy/category/item</td><td>/category/item</td></tr>
+            </table>
+            <div class="callout warning">
+              <span class="callout-icon">⚠️</span>
+              <div>Avoid redirecting 404 pages to the homepage. This creates "soft 404s" that Google penalises. Always redirect to the most relevant replacement page.</div>
+            </div>
+          </div>
+        </li>
+        <li>
+          <div class="step-num">5</div>
+          <div class="step-content">
+            <strong>Preview and publish the updated redirects</strong>
+            <p>Use AEM Sidekick to preview the redirects spreadsheet, verify the new rows, then publish. Test the redirect works:</p>
+            <div class="code-block">curl -I https://www.yourdomain.com/old-product-page
+# Expected: HTTP/2 301
+# Location: https://www.yourdomain.com/products/new-product-name</div>
+          </div>
+        </li>
+        <li>
+          <div class="step-num">6</div>
+          <div class="step-content">
+            <strong>Monitor 404s weekly for the first 4 weeks</strong>
+            <p>Set a recurring calendar reminder to review 404 reports every week for the first month. The volume should decline as you catch and redirect the long tail of broken URLs.</p>
+          </div>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════
+       5. CORE WEB VITALS FIELD DATA
+  ══════════════════════════════════════════════════════════════ -->
+  <section class="section" id="cwv-field">
+    <div class="section-header">
+      <div class="section-number">5</div>
+      <div>
+        <div class="section-title">Core Web Vitals Field Data (RUM)</div>
+        <div class="section-subtitle">Lab scores are a proxy — field data from real visitors is the ultimate judge</div>
+      </div>
+      <span class="section-tag tag-week1">Week 1+</span>
+    </div>
+    <div class="section-body">
+
+      <div class="callout info">
+        <span class="callout-icon">ℹ️</span>
+        <div>Google's CrUX (Chrome User Experience Report) data takes 28 days to reflect a site change. Check RUM data for early field signals while waiting for CrUX to update.</div>
+      </div>
+
+      <div class="metric-grid">
+        <div class="metric-card">
+          <span class="metric-icon">🎨</span>
+          <div class="metric-name">LCP</div>
+          <div class="metric-target">&lt; 2.5 s</div>
+          <div class="metric-desc">Largest Contentful Paint — hero image/text visible</div>
+        </div>
+        <div class="metric-card">
+          <span class="metric-icon">👆</span>
+          <div class="metric-name">INP</div>
+          <div class="metric-target">&lt; 200 ms</div>
+          <div class="metric-desc">Interaction to Next Paint — click responsiveness</div>
+        </div>
+        <div class="metric-card">
+          <span class="metric-icon">📐</span>
+          <div class="metric-name">CLS</div>
+          <div class="metric-target">&lt; 0.1</div>
+          <div class="metric-desc">Cumulative Layout Shift — visual stability</div>
+        </div>
+        <div class="metric-card">
+          <span class="metric-icon">⚡</span>
+          <div class="metric-name">TTFB</div>
+          <div class="metric-target">&lt; 800 ms</div>
+          <div class="metric-desc">Time to First Byte — server response speed</div>
+        </div>
+      </div>
+
+      <ol class="steps">
+        <li>
+          <div class="step-num">1</div>
+          <div class="step-content">
+            <strong>Check AEM RUM Dashboard</strong>
+            <p>AEM's Operational Telemetry data is collected automatically from real visitors. Access the dashboard provided by your Adobe account team and check field LCP, INP, and CLS values are within the "Good" thresholds above.</p>
+          </div>
+        </li>
+        <li>
+          <div class="step-num">2</div>
+          <div class="step-content">
+            <strong>Check CrUX data via Search Console</strong>
+            <p>After 28 days, go to Search Console → <strong>Experience → Core Web Vitals</strong>. Review the URL groups flagged as "Poor" or "Needs improvement". Each group links to the specific URLs and the metric causing the issue.</p>
+            <div class="screenshot">
+              <span class="icon">📊</span>
+              <strong>Search Console — Core Web Vitals Report</strong>
+              Insert a screenshot of the Search Console Core Web Vitals report. Target: all URLs in the "Good" (green) category for both mobile and desktop.
+            </div>
+          </div>
+        </li>
+        <li>
+          <div class="step-num">3</div>
+          <div class="step-content">
+            <strong>Run CrUX API check for field data</strong>
+            <div class="code-block"># Quick CrUX field data lookup (replace with your domain)
+curl -s "https://chromeuxreport.googleapis.com/v1/records:queryRecord?key=YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"url": "https://www.yourdomain.com/", "formFactor": "PHONE"}' \
+  | jq '.record.metrics | {lcp: .largest_contentful_paint.percentiles.p75,
+                             inp: .interaction_to_next_paint.percentiles.p75,
+                             cls: .cumulative_layout_shift.percentiles.p75}'</div>
+          </div>
+        </li>
+        <li>
+          <div class="step-num">4</div>
+          <div class="step-content">
+            <strong>Compare before/after if OpTel was set up pre-launch</strong>
+            <p>If you instrumented the old site with OpTel before migration, compare the RUM CWV metrics from the old site vs the new AEM EDS site. Document the improvement for stakeholders.</p>
+          </div>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════
+       6. VERIFY SEARCH ENGINE INDEXING
+  ══════════════════════════════════════════════════════════════ -->
+  <section class="section" id="indexing">
+    <div class="section-header">
+      <div class="section-number">6</div>
+      <div>
+        <div class="section-title">Verify Search Engine Indexing</div>
+        <div class="section-subtitle">Confirm Google can discover, crawl, and index your pages correctly</div>
+      </div>
+      <span class="section-tag tag-week1">Week 1+</span>
+    </div>
+    <div class="section-body">
+      <ol class="steps">
+        <li>
+          <div class="step-num">1</div>
+          <div class="step-content">
+            <strong>Check indexed page count with a Google site: search</strong>
+            <p>In a Google search bar, type:</p>
+            <div class="code-block">site:www.yourdomain.com</div>
+            <p>Google will show how many pages it has indexed. Compare this to the number of URLs in your sitemap. A large discrepancy (e.g., sitemap has 500 pages but Google only shows 50) indicates an indexing problem.</p>
+            <div class="screenshot">
+              <span class="icon">🔍</span>
+              <strong>Google — site: Search Result</strong>
+              Insert a screenshot of the Google search results for site:www.yourdomain.com. Note the approximate result count shown at the top.
+            </div>
+          </div>
+        </li>
+        <li>
+          <div class="step-num">2</div>
+          <div class="step-content">
+            <strong>Check Search Console Indexing → Pages report</strong>
+            <p>In Search Console → <strong>Indexing → Pages</strong>, review the breakdown by reason:</p>
+            <table>
+              <tr><th>Status</th><th>Meaning</th><th>Action</th></tr>
+              <tr><td>Indexed</td><td>Page is indexed ✅</td><td>No action needed</td></tr>
+              <tr><td>Crawled — not indexed</td><td>Google crawled but chose not to index</td><td>Check for thin/duplicate content or noindex tags</td></tr>
+              <tr><td>Discovered — not crawled</td><td>In queue, not yet crawled</td><td>Wait or request indexing via URL Inspection</td></tr>
+              <tr><td>Not found (404)</td><td>URL returns 404</td><td>Add a redirect or fix the URL</td></tr>
+              <tr><td>Soft 404</td><td>Page returns 200 but looks like a 404</td><td>Fix the page content or add a redirect</td></tr>
+              <tr><td>Blocked by robots.txt</td><td>robots.txt Disallow rule found</td><td>Check robots.txt — allow if page should be indexed</td></tr>
+              <tr><td>Excluded by noindex tag</td><td>robots meta tag has noindex</td><td>Remove noindex if page should be indexed</td></tr>
+            </table>
+          </div>
+        </li>
+        <li>
+          <div class="step-num">3</div>
+          <div class="step-content">
+            <strong>Confirm noindex pages are NOT indexed</strong>
+            <p>For pages you deliberately excluded (e.g., internal tools, draft pages), do a Google site: search for those specific URLs to confirm they do not appear:</p>
+            <div class="code-block">site:www.yourdomain.com/internal-draft-page</div>
+            <p>If a noindex page appears, check that the <code class="code-inline">robots</code> metadata was published correctly and Google has re-crawled it since.</p>
+          </div>
+        </li>
+        <li>
+          <div class="step-num">4</div>
+          <div class="step-content">
+            <strong>Validate the AEM query index is complete</strong>
+            <p>The AEM query index powers both the sitemap and client-side search/filtering. Confirm all pages are indexed:</p>
+            <div class="code-block"># Check the query index JSON
+curl https://www.yourdomain.com/query-index.json | jq '.total'
+
+# Compare with sitemap count
+curl -s https://www.yourdomain.com/sitemap.xml | grep -c '&lt;loc&gt;'</div>
+            <p>The counts should be similar (excluding noindex pages).</p>
+          </div>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════
+       7. RE-TEST PUSH INVALIDATION
+  ══════════════════════════════════════════════════════════════ -->
+  <section class="section" id="push-test">
+    <div class="section-header">
+      <div class="section-number">7</div>
+      <div>
+        <div class="section-title">Re-test Push Invalidation on Production</div>
+        <div class="section-subtitle">Confirm content changes reach visitors instantly on the live domain</div>
+      </div>
+      <span class="section-tag tag-immediate">Immediate</span>
+    </div>
+    <div class="section-body">
+      <ol class="steps">
+        <li>
+          <div class="step-num">1</div>
+          <div class="step-content">
+            <strong>Make a small, visible change on a production page</strong>
+            <p>In SharePoint or Google Drive, change a visible piece of text on your homepage (e.g., add "(Updated)" to a heading). Make a note of the exact change.</p>
+          </div>
+        </li>
+        <li>
+          <div class="step-num">2</div>
+          <div class="step-content">
+            <strong>Publish the change via Sidekick</strong>
+            <p>Open AEM Sidekick on the page → click <strong>Preview</strong> → then click <strong>Publish</strong>. Note the exact time you click Publish.</p>
+          </div>
+        </li>
+        <li>
+          <div class="step-num">3</div>
+          <div class="step-content">
+            <strong>Verify the change appears on the production domain</strong>
+            <p>Within 10–30 seconds, open the production URL in an incognito window (to bypass browser cache):</p>
+            <div class="code-block">https://www.yourdomain.com/</div>
+            <p>The change you made should be visible. If it is not visible within 60 seconds, cache invalidation is not working.</p>
+          </div>
+        </li>
+        <li>
+          <div class="step-num">4</div>
+          <div class="step-content">
+            <strong>Verify via response headers</strong>
+            <div class="code-block">curl -I https://www.yourdomain.com/
+# Fresh response from purge:
+# age: 0  or  x-cache: MISS</div>
+            <div class="screenshot">
+              <span class="icon">🔄</span>
+              <strong>Production CDN — Fresh Response After Publish</strong>
+              Insert a screenshot of curl -I output after publishing a change. The Age header should be 0 or very low.
+            </div>
+          </div>
+        </li>
+        <li>
+          <div class="step-num">5</div>
+          <div class="step-content">
+            <strong>Undo the test change</strong>
+            <p>Remove the "(Updated)" text from the heading, preview and republish the page to restore it to its original state.</p>
+          </div>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════
+       8. ONGOING MONITORING
+  ══════════════════════════════════════════════════════════════ -->
+  <section class="section" id="ongoing">
+    <div class="section-header">
+      <div class="section-number">8</div>
+      <div>
+        <div class="section-title">Ongoing Monitoring Schedule</div>
+        <div class="section-subtitle">What to check and how often in the weeks after go-live</div>
+      </div>
+      <span class="section-tag tag-ongoing">Ongoing</span>
+    </div>
+    <div class="section-body">
+
+      <table>
+        <tr>
+          <th>Frequency</th>
+          <th>What to Check</th>
+          <th>Tool / Where</th>
+          <th>What "Good" Looks Like</th>
+        </tr>
+        <tr>
+          <td><strong>Daily</strong> (Week 1)</td>
+          <td>404 reports from Slack bot / RUM</td>
+          <td>Project Slack channel or AEM RUM dashboard</td>
+          <td>Volume decreasing day-on-day as redirects are added</td>
+        </tr>
+        <tr>
+          <td><strong>Daily</strong> (Week 1)</td>
+          <td>Analytics real-time data</td>
+          <td>Google Analytics / Adobe Analytics</td>
+          <td>Sessions tracking correctly, no data gaps</td>
+        </tr>
+        <tr>
+          <td><strong>Weekly</strong></td>
+          <td>Search Console Performance</td>
+          <td>search.google.com/search-console → Performance</td>
+          <td>Impressions and clicks recovering to pre-launch baseline</td>
+        </tr>
+        <tr>
+          <td><strong>Weekly</strong></td>
+          <td>Search Console Indexing → Pages</td>
+          <td>Search Console → Indexing → Pages</td>
+          <td>Indexed page count growing, errors declining</td>
+        </tr>
+        <tr>
+          <td><strong>Weekly</strong></td>
+          <td>PageSpeed Insights on production</td>
+          <td>pagespeed.web.dev</td>
+          <td>Lighthouse score stays at 100 — no regressions from code changes</td>
+        </tr>
+        <tr>
+          <td><strong>Weekly</strong></td>
+          <td>404 report — Search Console</td>
+          <td>Indexing → Pages → filter "Not found (404)"</td>
+          <td>All high-traffic 404s have redirects; list shrinking</td>
+        </tr>
+        <tr>
+          <td><strong>After 28 days</strong></td>
+          <td>Core Web Vitals — CrUX field data</td>
+          <td>Search Console → Experience → CWV</td>
+          <td>All URLs in "Good" range for LCP, INP, CLS</td>
+        </tr>
+        <tr>
+          <td><strong>Monthly</strong></td>
+          <td>Backlinks and linked pages</td>
+          <td>Search Console → Links</td>
+          <td>High-value backlinks resolving to 200 (not 404 or redirect)</td>
+        </tr>
+        <tr>
+          <td><strong>Each PR/deploy</strong></td>
+          <td>PSI via AEM GitHub bot</td>
+          <td>GitHub PR checks</td>
+          <td>All checks passing; PSI score 100</td>
+        </tr>
+      </table>
+
+      <div class="callout success">
+        <span class="callout-icon">✅</span>
+        <div><strong>Tip:</strong> Set up Google Search Console email alerts for critical issues (coverage errors, manual actions, security issues) so you are notified automatically without having to check manually. Settings → Email preferences → turn on "All issues".</div>
+      </div>
+
+      <ol class="steps" style="margin-top:16px;">
+        <li>
+          <div class="step-num">1</div>
+          <div class="step-content">
+            <strong>Enable Search Console email alerts</strong>
+            <p>Search Console → Settings → Notifications → turn on email alerts for:</p>
+            <ul style="font-size:0.88rem;color:var(--color-text-muted);margin-left:16px;">
+              <li>Issues found / fixed in Coverage</li>
+              <li>Manual actions</li>
+              <li>Security issues</li>
+            </ul>
+          </div>
+        </li>
+        <li>
+          <div class="step-num">2</div>
+          <div class="step-content">
+            <strong>Add your site to a Lighthouse CI monitoring tool</strong>
+            <p>For ongoing Lighthouse regression prevention, consider setting up <a href="https://developers.google.com/speed/pagespeed/insights/" target="_blank">Lighthouse CI</a> or a third-party uptime/perf monitor (e.g., Calibre, SpeedCurve) that runs PSI weekly against your key pages.</p>
+          </div>
+        </li>
+        <li>
+          <div class="step-num">3</div>
+          <div class="step-content">
+            <strong>Run a post-launch retrospective (2 weeks after go-live)</strong>
+            <p>Bring together the development team, analytics team, and business stakeholders to review:</p>
+            <ul style="font-size:0.88rem;color:var(--color-text-muted);margin-left:16px;">
+              <li>Performance comparison: before vs after (CWV, PSI)</li>
+              <li>SEO status: indexing progress, organic traffic trend</li>
+              <li>404s resolved vs outstanding</li>
+              <li>Analytics data quality confirmation</li>
+              <li>Any user-reported issues</li>
+            </ul>
+          </div>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- ── Final Quick-Reference Checklist ───────────────────── -->
+  <div class="toc-card" style="margin-top:40px;">
+    <h2>Post Go-Live Quick Reference Checklist</h2>
+    <ul class="checklist">
+      <li><span class="check">☐</span> PSI score is 100 on the production domain (not just .aem.live) — both mobile and desktop</li>
+      <li><span class="check">☐</span> CDN response headers confirmed — HTTP/2, correct Cache-Control, Age: 0 on fresh pages</li>
+      <li><span class="check">☐</span> Analytics firing on production hostname — real-time data visible in dashboard</li>
+      <li><span class="check">☐</span> Tag manager rules updated for production hostname</li>
+      <li><span class="check">☐</span> Consent management working — tracking blocked until consent given</li>
+      <li><span class="check">☐</span> Google Search Console property verified for production domain</li>
+      <li><span class="check">☐</span> Sitemap submitted to Search Console — status: Success</li>
+      <li><span class="check">☐</span> Key pages requested for indexing via URL Inspection tool</li>
+      <li><span class="check">☐</span> 404 monitoring active — Slack bot or GA4 report configured</li>
+      <li><span class="check">☐</span> First 404 redirect batch added and published</li>
+      <li><span class="check">☐</span> Push invalidation tested on production — change visible within 30s</li>
+      <li><span class="check">☐</span> Search Console email alerts turned on</li>
+      <li><span class="check">☐</span> Weekly monitoring schedule in place (PSI, GSC, 404s, analytics)</li>
+      <li><span class="check">☐</span> 28-day CWV field data review scheduled in calendar</li>
+    </ul>
+  </div>
+
+  <!-- ── References ─────────────────────────────────────────── -->
+  <div class="references">
+    <h2>References &amp; Source of Truth</h2>
+    <div class="ref-grid">
+      <a class="ref-card" href="https://www.aem.live/docs/go-live-checklist" target="_blank">
+        <div class="ref-tag">Official</div>
+        <div class="ref-title">Go-Live Checklist</div>
+        <div class="ref-url">www.aem.live/docs/go-live-checklist</div>
+      </a>
+      <a class="ref-card" href="https://www.aem.live/developer/keeping-it-100" target="_blank">
+        <div class="ref-tag">Performance</div>
+        <div class="ref-title">Keeping Your Lighthouse Score 100</div>
+        <div class="ref-url">www.aem.live/developer/keeping-it-100</div>
+      </a>
+      <a class="ref-card" href="https://pagespeed.web.dev/" target="_blank">
+        <div class="ref-tag">Tool</div>
+        <div class="ref-title">Google PageSpeed Insights</div>
+        <div class="ref-url">pagespeed.web.dev</div>
+      </a>
+      <a class="ref-card" href="https://search.google.com/search-console" target="_blank">
+        <div class="ref-tag">Tool</div>
+        <div class="ref-title">Google Search Console</div>
+        <div class="ref-url">search.google.com/search-console</div>
+      </a>
+      <a class="ref-card" href="https://www.aem.live/docs/redirects" target="_blank">
+        <div class="ref-tag">Redirects</div>
+        <div class="ref-title">Redirects Documentation</div>
+        <div class="ref-url">www.aem.live/docs/redirects</div>
+      </a>
+      <a class="ref-card" href="https://www.aem.live/developer/indexing" target="_blank">
+        <div class="ref-tag">Indexing</div>
+        <div class="ref-title">AEM Indexing &amp; Query Index</div>
+        <div class="ref-url">www.aem.live/developer/indexing</div>
+      </a>
+      <a class="ref-card" href="https://www.aem.live/docs/seo-geo" target="_blank">
+        <div class="ref-tag">SEO</div>
+        <div class="ref-title">SEO &amp; GEO Best Practices</div>
+        <div class="ref-url">www.aem.live/docs/seo-geo</div>
+      </a>
+      <a class="ref-card" href="https://www.aem.live/docs/setup-byo-cdn-push-invalidation" target="_blank">
+        <div class="ref-tag">CDN</div>
+        <div class="ref-title">Configuring Push Invalidation (BYO CDN)</div>
+        <div class="ref-url">www.aem.live/docs/setup-byo-cdn-push-invalidation</div>
+      </a>
+      <a class="ref-card" href="https://www.aem.live/docs/byo-cdn-setup" target="_blank">
+        <div class="ref-tag">CDN</div>
+        <div class="ref-title">BYO CDN Setup</div>
+        <div class="ref-url">www.aem.live/docs/byo-cdn-setup</div>
+      </a>
+      <a class="ref-card" href="https://www.aem.live/docs/byo-cdn-adobe-managed" target="_blank">
+        <div class="ref-tag">CDN</div>
+        <div class="ref-title">Adobe Managed CDN</div>
+        <div class="ref-url">www.aem.live/docs/byo-cdn-adobe-managed</div>
+      </a>
+      <a class="ref-card" href="https://developers.google.com/search/docs/crawling-indexing/sitemaps/overview" target="_blank">
+        <div class="ref-tag">Google</div>
+        <div class="ref-title">Google — Sitemaps Overview</div>
+        <div class="ref-url">developers.google.com/search/docs</div>
+      </a>
+      <a class="ref-card" href="https://developers.google.com/search/docs/specialty/international/managing-multi-regional-sites" target="_blank">
+        <div class="ref-tag">Google</div>
+        <div class="ref-title">Google — Site Moves Best Practices</div>
+        <div class="ref-url">developers.google.com/search/docs</div>
+      </a>
+      <a class="ref-card" href="https://web.dev/articles/vitals" target="_blank">
+        <div class="ref-tag">CWV</div>
+        <div class="ref-title">Core Web Vitals — web.dev</div>
+        <div class="ref-url">web.dev/articles/vitals</div>
+      </a>
+      <a class="ref-card" href="./pre-go-live-checklist.html">
+        <div class="ref-tag">Companion Doc</div>
+        <div class="ref-title">Pre Go-Live Checklist</div>
+        <div class="ref-url">drafts/pre-go-live-checklist.html</div>
+      </a>
+    </div>
+  </div>
+
+</div><!-- /container -->
+
+<footer class="doc-footer">
+  AEM Edge Delivery Services — Post Go-Live Checklist &nbsp;|&nbsp; Source of truth: <a href="https://www.aem.live/docs/go-live-checklist" target="_blank">www.aem.live/docs/go-live-checklist</a>
+</footer>
+
+</body>
+</html>

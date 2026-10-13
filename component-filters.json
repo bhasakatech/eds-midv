@@ -12,10 +12,33 @@
       "image",
       "button",
       "title",
+      "form",
+      "embed-adaptive-form",
       "hero",
       "cards",
       "columns",
-      "fragment"
+      "fragment",
+      "quote",
+      "video-text",
+      "event-list",
+      "offer",
+      "announcement-bar",
+      "faq-details",
+      "products-solutions",
+      "product-list",
+      "event-hero",
+      "section-nav",
+      "content-band",
+      "activity-list",
+      "feature-cards",
+      "experience-fragment",
+      "asset-picker"
+    ]
+  },
+  {
+    "id": "activity-list",
+    "components": [
+      "activity-item"
     ]
   },
   {
@@ -37,6 +60,66 @@
       "image",
       "button",
       "title"
+    ]
+  },
+  {
+    "id": "faq-details",
+    "components": [
+      "faq-item"
+    ]
+  },
+  {
+    "id": "feature-cards",
+    "components": [
+      "feature-card"
+    ]
+  },
+  {
+    "id": "form",
+    "components": [
+      "captcha",
+      "checkbox",
+      "checkbox-group",
+      "date-input",
+      "drop-down",
+      "email",
+      "file-input",
+      "form-accordion",
+      "form-button",
+      "form-fragment",
+      "form-image",
+      "form-modal",
+      "form-reset-button",
+      "form-submit-button",
+      "number-input",
+      "panel",
+      "password",
+      "plain-text",
+      "radio-group",
+      "rating",
+      "telephone-input",
+      "text-input",
+      "tnc",
+      "wizard",
+      "range"
+    ]
+  },
+  {
+    "id": "products-solutions",
+    "components": [
+      "product-category"
+    ]
+  },
+  {
+    "id": "section-nav",
+    "components": [
+      "section-nav-item"
+    ]
+  },
+  {
+    "id": "theater-sessions",
+    "components": [
+      "theater-session"
     ]
   }
 ]

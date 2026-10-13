@@ -1,0 +1,107 @@
+{
+  "definitions": [
+    {
+      "title": "Video Text",
+      "id": "video-text",
+      "plugins": {
+        "xwalk": {
+          "page": {
+            "resourceType": "core/franklin/components/block/v1/block",
+            "template": {
+              "name": "Video Text",
+              "model": "video-text"
+            }
+          }
+        }
+      }
+    }
+  ],
+  "models": [
+    {
+      "id": "video-text",
+      "fields": [
+        {
+          "component": "text",
+          "name": "content_heading",
+          "label": "Heading",
+          "valueType": "string",
+          "value": ""
+        },
+        {
+          "component": "richtext",
+          "name": "content_description",
+          "label": "Description",
+          "valueType": "string",
+          "value": ""
+        },
+        {
+          "component": "text",
+          "name": "content_videoUrl",
+          "label": "Video URL",
+          "valueType": "string",
+          "value": ""
+        },
+        {
+          "component": "reference",
+          "name": "content_thumbnail",
+          "label": "Video Thumbnail",
+          "valueType": "string",
+          "multi": false
+        },
+        {
+          "component": "tab",
+          "name": "tabCta",
+          "label": "CTA"
+        },
+        {
+          "component": "aem-content",
+          "name": "cta_link",
+          "label": "CTA Link",
+          "valueType": "string",
+          "value": ""
+        },
+        {
+          "component": "text",
+          "name": "cta_label",
+          "label": "CTA Label",
+          "valueType": "string",
+          "value": ""
+        },
+        {
+          "component": "tab",
+          "name": "tabLayout",
+          "label": "Layout"
+        },
+        {
+          "component": "multiselect",
+          "name": "classes",
+          "label": "Video Text Layout Options",
+          "options": [
+            {
+              "name": "Video Text Variants",
+              "children": [
+                {
+                  "name": "Video Left",
+                  "value": "video-left"
+                },
+                {
+                  "name": "Video Right",
+                  "value": "video-right"
+                },
+                {
+                  "name": "Dark Background",
+                  "value": "dark"
+                },
+                {
+                  "name": "Light Background",
+                  "value": "light"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "filters": []
+}

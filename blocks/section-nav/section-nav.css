@@ -1,0 +1,106 @@
+/*
+ * Section Nav – in-page sticky sub-navigation bar
+ * Values extracted from events.gehealthcare.com (div.header-bluebar.sticky-nav)
+ */
+
+/* Full-width white sticky bar on the section wrapper.
+   Overrides the authored .section.grey band so the bar reads as the source. */
+main .section.section-nav-container {
+  margin: 0;
+  padding: 0;
+  background-color: #fff;
+  border-bottom: 1px solid #dbdbdb;
+  position: sticky;
+  top: var(--nav-height, 64px);
+  z-index: 98;
+}
+
+.section-nav {
+  --sn-link-color: #363636;
+  --sn-cta-bg: var(--brand-purple, #6022a6);
+  --sn-cta-bg-hover: var(--brand-purple-dark, #3d1a5b);
+
+  font-family: var(--body-font-family, "Source Sans Pro", sans-serif);
+}
+
+.section-nav .section-nav-bar {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 14px 0;
+}
+
+.section-nav .section-nav-list {
+  display: flex;
+  flex-flow: column wrap;
+  gap: 12px 20px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.section-nav .section-nav-list a {
+  color: var(--sn-link-color);
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 16px;
+  text-decoration: none;
+}
+
+.section-nav .section-nav-list a:hover {
+  color: var(--brand-purple, #6022a6);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.section-nav .section-nav-list a.is-active {
+  color: var(--brand-purple, #6022a6);
+  font-weight: 600;
+}
+
+.section-nav .section-nav-tools {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.section-nav .section-nav-cta {
+  display: inline-block;
+  margin: 0;
+  padding: 6px 20px;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  background-color: var(--sn-cta-bg);
+  color: #fff;
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 22.5px;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.section-nav .section-nav-cta:hover,
+.section-nav .section-nav-cta:focus-visible {
+  background-color: var(--sn-cta-bg-hover);
+  color: #fff;
+}
+
+@media (width >= 900px) {
+  .section-nav .section-nav-bar {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 14px 0;
+  }
+
+  .section-nav .section-nav-list {
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .section-nav .section-nav-tools {
+    justify-content: flex-end;
+  }
+}
